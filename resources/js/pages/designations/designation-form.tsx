@@ -1,0 +1,132 @@
+import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { useForm, usePage } from '@inertiajs/react';
+import InputError from '@/components/input-error';
+import { LoaderCircle } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import { Designation } from '@/types/designation';
+import { FlashProps } from '@/types/global';
+
+interface DialogDemoProps {
+    designation?: Designation | null;
+    onClose: () => void;
+}
+
+export function DialogDemo({ designation, onClose }: DialogDemoProps) {
+    const isEditing = Boolean(designation);
+    const shownFlash = useRef(false);
+    const [open, setOpen] = useState(false);
+    const { flash } = usePage<{ flash: FlashProps }>().props;
+
+    const { data, setData, post, put, processing, errors, reset } = useForm({
+        title: '',
+        description: '',
+    });
+
+    const submit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const method = isEditing ? put : post;
+        const url = isEditing
+            ? route('designations.update', designation?.id)
+            : route('designations.store');
+
+        method(url, {
+            onSuccess: () => {
+                reset(); // Reset form after successful submission
+                setOpen(false); // Close the dialog
+                onClose(); // Call onClose to reset the selected designation
+            },
+        });
+    };
+
+    useEffect(() => {
+        // Don't auto-close the dialog if there are errors
+        if (designation) {
+            setOpen(true);
+            setData({
+                title: designation.title,
+                description: designation.description || '',
+            });
+        } else if (!Object.keys(errors).length) {
+            // ✅ Only close if there are no validation errors
+            setOpen(false);
+            reset();
+        }
+        if (flash?.success && !shownFlash.current) {
+            toast.success(flash.success);
+            shownFlash.current = true;
+        }
+
+        if (flash?.error && !shownFlash.current) {
+            toast.error(flash.error);
+            shownFlash.current = true;
+        }
+    }, [designation, setData, reset, flash, errors]);
+
+    return (
+        <Dialog open={open} onOpenChange={(val) => {
+            setOpen(val);
+            if (!val) onClose(); // Reset on close
+        }}>
+            <DialogTrigger asChild>
+                {!isEditing && (
+                    <Button variant="outline" className="cursor-pointer">
+                        Add Designation
+                    </Button>
+                )}
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                    <DialogTitle>{isEditing ? 'Edit' : 'Add'} Designation</DialogTitle>
+                    <DialogDescription>
+                        {isEditing
+                            ? 'Update the designation details.'
+                            : 'Provide a name and description.'}
+                    </DialogDescription>
+                </DialogHeader>
+                <form className="grid gap-4" onSubmit={submit}>
+                    <div>
+                        <Label htmlFor="title">Title</Label>
+                        <Input
+                            id="title"
+                            value={data.title}
+                            onChange={(e) => setData('title', e.target.value)}
+                            disabled={processing}
+                        />
+                        <InputError message={errors.title} />
+                    </div>
+                    <div>
+                        <Label htmlFor="description">Description</Label>
+                        <Textarea
+                            id="description"
+                            value={data.description}
+                            onChange={(e) => setData('description', e.target.value)}
+                            disabled={processing}
+                            rows={4}
+                        />
+                        <InputError message={errors.description} />
+                    </div>
+                    <DialogFooter>
+                        <Button type="submit" disabled={processing}>
+                            {processing && <LoaderCircle className="animate-spin h-4 w-4 mr-2" />}
+                            {isEditing ? 'Update' : 'Save'}
+                        </Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
+    );
+}
