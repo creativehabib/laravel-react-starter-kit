@@ -9,6 +9,7 @@ import { DepartmentType, FlashProps, LinksType } from '@/types/globals';
 import DeleteDialog from '@/components/delete-dialog';
 import InertiaPagination from '@/components/inertia-pagination';
 import Toggle from '@/components/toggle';
+import ToggleStatus from '@/components/toggle-status';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -54,11 +55,12 @@ export default function Index() {
         }
     };
     const handleStatusToggle = (id: number) => {
-        
-        router.put(route('departments.toggle-status', id), {}, {
+
+        router.put(route('departments.toggle-status', id),  {
+            headers: { Accept: 'application/json' },
             preserveScroll: true,
             preserveState: true,
-            only: ['departments', 'flash'], 
+            only: ['departments', 'flash'],
         });
     };
 
@@ -98,7 +100,13 @@ export default function Index() {
                                     <td className="border px-2 py-1">{department.name}</td>
                                     <td className="border px-2 py-1">{department.user.name}</td>
                                     <td className="border px-2 py-1 text-center">
-                                        <Toggle initial={department.status} onChange={ () => handleStatusToggle(department.id)} />
+                                        {/*<Toggle initial={department.status} onChange={ () => handleStatusToggle(department.id)} />*/}
+                                        <ToggleStatus
+                                            id={department.id}
+                                            initial={department.status}
+                                            routeName="departments.toggle-status"
+                                            only={['departments', 'flash']} // optional, for partial reload
+                                        />
                                     </td>
                                     <td className="border px-2 py-1 text-center">
                                         {department.created_at ? new Date(department.created_at).toLocaleDateString() : '—'}

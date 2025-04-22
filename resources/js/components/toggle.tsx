@@ -21,7 +21,7 @@ const Toggle: FC<ToggleProps> = ({ initial = false, onChange }) => {
       className={cn(
         "relative w-16 h-6 flex items-center rounded-full cursor-pointer px-1 transition-colors duration-300",
         enabled ? "bg-green-500" : "bg-gray-400"
-      )} 
+      )}
     >
       {/* NO text on the left, YES on the right */}
       <span

@@ -117,18 +117,43 @@ class DepartmentController extends Controller
         return redirect()->back()->with('success', 'Department deleted successfully.');
     }
 
-    public function toggleStatus($id): RedirectResponse
+//    public function toggleStatus($id)
+//    {
+//        try{
+//            $department = Department::findOrFail($id);
+//            $department->update([
+//                'status' => $department->status,
+//            ]);
+//            return back(303)->with('success', 'Status updated successfully.');
+//        } catch (\Exception $e) {
+//            return back(303)->with('error', 'Failed to update status.');
+//        }
+//
+//    }
+
+    public function toggleStatus(Request $request, $id)
     {
-        try{
+        // Validate the incoming status
+        $request->validate(['status' => 'required|boolean']);
+
+        try {
+            // Find the department and update its status
             $department = Department::findOrFail($id);
-            $department->status = !$department->status;
+            $department->status = $request->status;
             $department->save();
 
-            return Redirect::back()->with('success', 'Status updated successfully.');
+            // Return a success message and updated status as JSON
+            return response()->json([
+                'message' => 'Status updated successfully.',
+                'status' => $department->status
+            ], 200);
         } catch (\Exception $e) {
-            Log::error('Error updating department status: ' . $e->getMessage());
-            return Redirect::back()->with('error', 'Failed to update status.');
+            // Return an error message if something goes wrong
+            return response()->json([
+                'message' => 'Failed to update status.',
+            ], 400);
         }
-
     }
+
+
 }

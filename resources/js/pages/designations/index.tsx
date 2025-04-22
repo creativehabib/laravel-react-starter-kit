@@ -58,7 +58,7 @@ export default function Index() {
         router.put(route('designations.toggle-status', id), {}, {
             preserveScroll: true,
             preserveState: true,
-            only: ['designations', 'flash'], 
+            // only: ['designations', 'flash'],
         });
     };
 
