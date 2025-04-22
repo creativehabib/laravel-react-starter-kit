@@ -8,13 +8,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(function () {
     // Designation Routes
     Route::resource('designations', DesignationController::class);
-    Route::match(['put', 'post'], '/designations/{id}/toggle-status', [DepartmentController::class, 'toggleStatus'])
-    ->name('designations.toggle-status');
+    Route::put('/designations/{id}/toggle-status', [DesignationController::class, 'toggleStatus'])->name('designations.toggle-status');
 
     // Department Routes
     Route::resource('departments', DepartmentController::class)->names('departments');
-    Route::match(['put', 'post'], '/departments/{id}/toggle-status', [DepartmentController::class, 'toggleStatus'])
-    ->name('departments.toggle-status');
+    Route::put('/departments/{id}/toggle-status', [DepartmentController::class, 'toggleStatus'])->name('departments.toggle-status');
+
     // Post Routes
     Route::resource('posts', PostController::class)->names('posts');
     Route::put('/posts/{id}/toggle-status', [PostController::class, 'toggleStatus'])->name('posts.toggle-status');
