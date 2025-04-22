@@ -53,16 +53,13 @@ export default function Index() {
             setOpenDeleteDialog(false); // Close the dialog after delete
         }
     };
+
     const handleStatusToggle = (id: number) => {
-        router.put(
-            route('designations.toggle-status', id),
-            {},
-            {
-                preserveScroll: true,
-                preserveState: true, // 👈 ensures updated props come back
-                only: ['designations', 'flash'], // Re-fetch only these props
-            },
-        );
+        router.put(route('designations.toggle-status', id), {}, {
+            preserveScroll: true,
+            preserveState: true,
+            only: ['designations', 'flash'], 
+        });
     };
 
     useEffect(() => {

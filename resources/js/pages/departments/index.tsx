@@ -54,15 +54,12 @@ export default function Index() {
         }
     };
     const handleStatusToggle = (id: number) => {
-        router.put(
-            route('departments.toggle-status', id),
-            {},
-            {
-                preserveScroll: true,
-                preserveState: true, // 👈 ensures updated props come back
-                only: ['departments', 'flash'], // Re-fetch only these props
-            },
-        );
+        
+        router.put(route('departments.toggle-status', id), {}, {
+            preserveScroll: true,
+            preserveState: true,
+            only: ['departments', 'flash'], 
+        });
     };
 
     useEffect(() => {
