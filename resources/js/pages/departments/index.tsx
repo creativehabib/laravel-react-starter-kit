@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { DepartmentType, FlashProps, LinksType } from '@/types/globals';
 import DeleteDialog from '@/components/delete-dialog';
 import InertiaPagination from '@/components/inertia-pagination';
+import Toggle from '@/components/toggle';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -106,6 +107,7 @@ export default function Index() {
                                             checked={department.status}
                                             onCheckedChange={() => handleStatusToggle(department.id)}
                                         />
+                                        <Toggle initial={department.status} onChange={ () => handleStatusToggle(department.id)} />
                                     </td>
                                     <td className="border px-2 py-1 text-center">
                                         {department.created_at ? new Date(department.created_at).toLocaleDateString() : '—'}

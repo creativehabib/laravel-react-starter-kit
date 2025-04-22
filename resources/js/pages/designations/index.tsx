@@ -2,13 +2,13 @@ import { Head, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { DialogDemo } from '@/pages/designations/designation-form';
-import { Switch } from "@/components/ui/switch"
 import { Edit, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
 import { DesignationType, FlashProps, LinksType } from '@/types/globals';
 import DeleteDialog from '@/components/delete-dialog';
 import InertiaPagination from '@/components/inertia-pagination';
+import Toggle from '@/components/toggle';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -99,11 +99,7 @@ export default function Index() {
                                     <td className="border px-2 py-1 text-center">{index + 1}</td>
                                     <td className="border px-2 py-1">{designation.title}</td>
                                     <td className="border px-2 py-1 text-center">
-                                        <Switch
-                                            className="cursor-pointer"
-                                            checked={designation.status}
-                                            onCheckedChange={() => handleStatusToggle(designation.id)}
-                                        />
+                                        <Toggle initial={designation.status} onChange={ () => handleStatusToggle(designation.id)} />
                                     </td>
                                     <td className="border px-2 py-1 text-center">
                                         {designation.created_at ? new Date(designation.created_at).toLocaleDateString() : '—'}
