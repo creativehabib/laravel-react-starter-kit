@@ -2,7 +2,6 @@ import { Head, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { DialogDemo } from '@/pages/departments/department-form';
-import { Switch } from "@/components/ui/switch"
 import { Edit, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
@@ -102,11 +101,6 @@ export default function Index() {
                                     <td className="border px-2 py-1">{department.name}</td>
                                     <td className="border px-2 py-1">{department.user.name}</td>
                                     <td className="border px-2 py-1 text-center">
-                                        <Switch
-                                            className="cursor-pointer"
-                                            checked={department.status}
-                                            onCheckedChange={() => handleStatusToggle(department.id)}
-                                        />
                                         <Toggle initial={department.status} onChange={ () => handleStatusToggle(department.id)} />
                                     </td>
                                     <td className="border px-2 py-1 text-center">

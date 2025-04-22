@@ -46,8 +46,7 @@ class DesignationController extends Controller
             $designation = Designation::create([
                 'title' => $request->input('title'),
                 'slug' => Str::slug($request->input('title')),
-                'description' => $request->input('description'),
-                'status' => true
+                'description' => $request->input('description')
             ]);
 
             if ($designation) {

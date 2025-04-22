@@ -98,7 +98,7 @@ export default function Index() {
                                 <tr key={designation.id}>
                                     <td className="border px-2 py-1 text-center">{index + 1}</td>
                                     <td className="border px-2 py-1">{designation.title}</td>
-                                    <td className="border px-2 py-1 text-center">
+                                    <td className="border px-2 py-1 text-center w-fit">
                                         <Toggle initial={designation.status} onChange={ () => handleStatusToggle(designation.id)} />
                                     </td>
                                     <td className="border px-2 py-1 text-center">

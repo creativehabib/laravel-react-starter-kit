@@ -45,8 +45,7 @@ class DepartmentController extends Controller
             $designation = Department::create([
                 'name' => $request->input('name'),
                 'description' => $request->input('description'),
-                'created_by' => auth()->user()->id,
-                'status' => true
+                'user_id' => auth()->user()->id,
             ]);
 
             if ($designation) {
