@@ -143,10 +143,7 @@ class DepartmentController extends Controller
             $department->save();
 
             // Return a success message and updated status as JSON
-            return response()->json([
-                'message' => 'Status updated successfully.',
-                'status' => $department->status
-            ], 200);
+
         } catch (\Exception $e) {
             // Return an error message if something goes wrong
             return response()->json([

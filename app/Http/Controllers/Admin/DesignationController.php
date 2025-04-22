@@ -125,7 +125,7 @@ class DesignationController extends Controller
      * @param $id
      * @return RedirectResponse
      */
-    public function toggleStatus(Request $request, $id): RedirectResponse
+    public function toggleStatus($id): RedirectResponse
     {
 
         $designation = Designation::findOrFail($id);
