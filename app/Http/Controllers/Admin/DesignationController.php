@@ -121,22 +121,20 @@ class DesignationController extends Controller
     }
 
     /**
-     * Toggle the status of the designation.
+     * @param Request $request
+     * @param $id
+     * @return RedirectResponse
      */
-    public function toggleStatus($id): RedirectResponse
+    public function toggleStatus(Request $request, $id): RedirectResponse
     {
-        try{
-            $designation = Designation::findOrFail($id);
-            $designation->status = !$designation->status;
-            $designation->save();
 
-            return Redirect::back()->with('success', 'Status updated successfully.');
-        } catch (\Exception $e) {
-            Log::error('Error updating designation status: ' . $e->getMessage());
-            return Redirect::back()->with('error', 'Failed to update status.');
-        }
+        $designation = Designation::findOrFail($id);
+        $designation->status = !$designation->status;
+        $designation->save();
+        return Redirect::back()->with('success', 'Status updated successfully.');
 
     }
+
 
 
 }

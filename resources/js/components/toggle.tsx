@@ -1,4 +1,4 @@
-import { useState, FC } from "react";
+import { useState, FC, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 
 interface ToggleProps {
@@ -9,6 +9,9 @@ interface ToggleProps {
 const Toggle: FC<ToggleProps> = ({ initial = false, onChange }) => {
   const [enabled, setEnabled] = useState<boolean>(initial);
 
+  useEffect(() => {
+    setEnabled(initial);
+  }, [initial]);
   const handleToggle = () => {
     const newState = !enabled;
     setEnabled(newState);
