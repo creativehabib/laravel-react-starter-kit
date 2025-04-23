@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BloodGroupController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\DesignationController;
 use App\Http\Controllers\Admin\PostController;
@@ -17,4 +18,8 @@ Route::middleware('auth')->group(function () {
     // Post Routes
     Route::resource('posts', PostController::class)->names('posts');
     Route::put('/posts/{id}/toggle-status', [PostController::class, 'toggleStatus'])->name('posts.toggle-status');
+
+    // Blood Group Routes
+    Route::resource('blood-groups', BloodGroupController::class)->names('blood-groups');
+    Route::post('/blood-groups/{id}/toggle-status', [BloodGroupController::class, 'toggleStatus'])->name('blood-groups.toggle-status');
 });

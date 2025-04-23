@@ -127,8 +127,7 @@ class DesignationController extends Controller
         $designation = Designation::findOrFail($id);
         $designation->status = !$designation->status;
         $designation->update(['status' => $designation->status]);
-        return redirect()->route('designations.index')->with('success', 'Status updated successfully.');
-
+        return back(303)->with('success', 'Status updated successfully.');
     }
 
 

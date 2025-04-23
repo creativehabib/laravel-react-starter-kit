@@ -9,7 +9,6 @@ import { DepartmentType, FlashProps, LinksType } from '@/types/globals';
 import DeleteDialog from '@/components/delete-dialog';
 import InertiaPagination from '@/components/inertia-pagination';
 import Toggle from '@/components/toggle';
-import ToggleStatus from '@/components/toggle-status';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

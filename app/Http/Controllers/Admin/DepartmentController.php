@@ -137,8 +137,7 @@ class DepartmentController extends Controller
         $department = Department::findOrFail($id);
         $department->status = !$department->status;
         $department->update(['status' => $department->status]);
-        return redirect()->route('departments.index')->with('success', 'Status updated successfully.');
-
+        return back(303)->with('success', 'Status updated successfully.');
     }
 
 }

@@ -32,7 +32,12 @@ const mainNavItems: NavItem[] = [
         title: 'Posts',
         href: '/posts',
         icon: NotebookPen,
-    }
+    },
+    {
+        title: 'Blood Groups',
+        href: '/blood-groups',
+        icon: BookOpen,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
