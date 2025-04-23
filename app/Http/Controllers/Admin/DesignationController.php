@@ -120,18 +120,14 @@ class DesignationController extends Controller
         return redirect()->back()->with('success', 'Designation deleted successfully.');
     }
 
-    /**
-     * @param Request $request
-     * @param $id
-     * @return RedirectResponse
-     */
-    public function toggleStatus($id): RedirectResponse
+    
+    public function toggleStatus($id)
     {
 
         $designation = Designation::findOrFail($id);
         $designation->status = !$designation->status;
-        $designation->save();
-        return Redirect::back()->with('success', 'Status updated successfully.');
+        $designation->update(['status' => $designation->status]);
+        return redirect()->route('designations.index')->with('success', 'Status updated successfully.');
 
     }
 
