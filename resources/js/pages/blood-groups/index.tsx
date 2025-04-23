@@ -43,11 +43,15 @@ const BloodGroupsIndex: React.FC<PageProps> = ({ bloodGroups }) => {
     };
 
     const toggleStatus = (id: number) => {
-        router.post(route('blood-groups.toggle-status', id), {},{
+        router.post(route('blood-groups.toggle-status', id), {}, {
             preserveScroll: true,
             preserveState: true,
-        })
+        });
+
     };
+
+
+
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
