@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(function () {
     // Designation Routes
     Route::resource('designations', DesignationController::class);
-    Route::put('/designations/{id}/toggle-status', [DesignationController::class, 'toggleStatus'])->name('designations.toggle-status');
+    Route::post('/designations/{id}/toggle-status', [DesignationController::class, 'toggleStatus'])->name('designations.toggle-status');
 
     // Department Routes
     Route::resource('departments', DepartmentController::class)->names('departments');

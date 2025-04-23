@@ -140,8 +140,8 @@ class DepartmentController extends Controller
             // Find the department and update its status
             $department = Department::findOrFail($id);
             $department->status = $request->status;
-            $department->update();
-            return redirect()->back()->with('success', 'Status updated successfully.');
+            $department->update(['status' => $department->status]);
+
             // Return a success message and updated status as JSON
 
         } catch (\Exception $e) {

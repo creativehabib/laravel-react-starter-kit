@@ -55,10 +55,10 @@ export default function Index() {
     };
 
     const handleStatusToggle = (id: number) => {
-        router.put(route('designations.toggle-status', id), {}, {
+        router.post(route('designations.toggle-status', id), {}, {
             preserveScroll: true,
             preserveState: true,
-            // only: ['designations', 'flash'],
+            only: ['designations', 'flash'],
         });
     };
 
