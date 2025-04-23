@@ -56,7 +56,7 @@ export default function Index() {
     };
     const handleStatusToggle = (id: number) => {
 
-        router.put(route('departments.toggle-status', id),  {
+        router.post(route('departments.toggle-status', id),  {
             headers: { Accept: 'application/json' },
             preserveScroll: true,
             preserveState: true,
@@ -100,13 +100,7 @@ export default function Index() {
                                     <td className="border px-2 py-1">{department.name}</td>
                                     <td className="border px-2 py-1">{department.user.name}</td>
                                     <td className="border px-2 py-1 text-center">
-                                        {/*<Toggle initial={department.status} onChange={ () => handleStatusToggle(department.id)} />*/}
-                                        <ToggleStatus
-                                            id={department.id}
-                                            initial={department.status}
-                                            routeName="departments.toggle-status"
-                                            only={['departments', 'flash']} // optional, for partial reload
-                                        />
+                                        <Toggle initial={department.status} onChange={ () => handleStatusToggle(department.id)} />
                                     </td>
                                     <td className="border px-2 py-1 text-center">
                                         {department.created_at ? new Date(department.created_at).toLocaleDateString() : '—'}

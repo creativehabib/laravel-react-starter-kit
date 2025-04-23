@@ -131,26 +131,14 @@ class DepartmentController extends Controller
 //
 //    }
 
-    public function toggleStatus(Request $request, $id)
+    public function toggleStatus($id)
     {
-        // Validate the incoming status
-        $request->validate(['status' => 'required|boolean']);
 
-        try {
-            // Find the department and update its status
-            $department = Department::findOrFail($id);
-            $department->status = $request->status;
-            $department->update(['status' => $department->status]);
+        $department = Department::findOrFail($id);
+        $department->status = !$department->status;
+        $department->update(['status' => $department->status]);
+        return redirect()->route('departments.index')->with('success', 'Status updated successfully.');
 
-            // Return a success message and updated status as JSON
-
-        } catch (\Exception $e) {
-            // Return an error message if something goes wrong
-            return response()->json([
-                'message' => 'Failed to update status.',
-            ], 400);
-        }
     }
-
 
 }

@@ -12,7 +12,7 @@ Route::middleware('auth')->group(function () {
 
     // Department Routes
     Route::resource('departments', DepartmentController::class)->names('departments');
-    Route::put('/departments/{id}/toggle-status', [DepartmentController::class, 'toggleStatus'])->name('departments.toggle-status');
+    Route::post('/departments/{id}/toggle-status', [DepartmentController::class, 'toggleStatus'])->name('departments.toggle-status');
 
     // Post Routes
     Route::resource('posts', PostController::class)->names('posts');
