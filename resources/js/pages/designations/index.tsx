@@ -55,14 +55,14 @@ export default function Index() {
         }
     };
 
-    const handleStatusToggle = (id: number) => {
+    const handleStatusToggle = async (id: number) => {
         // router.post(route('designations.toggle-status', id), {}, {
         //     preserveScroll: true,
         //     preserveState: true,
         //     only: ['designations', 'flash'],
         // });
         //
-        axios.post(`/designations/${id}/toggle-status`)
+        await axios.post(`/designations/${id}/toggle-status`)
             .then(response => {
                 router.reload();
                 toast.success(response.data.success);

@@ -28,6 +28,7 @@ interface PageProps {
 const BloodGroupsIndex: React.FC<PageProps> = ({ bloodGroups }) => {
     const { flash } = usePage<{flash: FlashProps}>().props;
     const { data, setData, post, reset } = useForm<{ name: string }>({ name: '' });
+    const [ status , setStatus ] = React.useState(bloodGroups[0].status);
 
     useEffect(() => {
         if (flash?.success) {
@@ -42,9 +43,10 @@ const BloodGroupsIndex: React.FC<PageProps> = ({ bloodGroups }) => {
         reset();
     };
 
-    const toggleStatus = (id: number) => {
-        axios.post(`/blood-groups/${id}/toggle-status`).then(
+    const toggleStatus = async (id: number) => {
+        await axios.post(`/blood-groups/${id}/toggle-status`).then(
             response => {
+                setStatus(response.data.status);
                 router.reload();
                 toast.success(response.data.success);
             }).catch(error => {
@@ -88,7 +90,7 @@ const BloodGroupsIndex: React.FC<PageProps> = ({ bloodGroups }) => {
                                 <td className="p-2 border">{bg.status ? 'Enabled' : 'Disabled'}</td>
                                 <td className="p-2 border">
                                     <Toggle
-                                        initial={bg.status}
+                                        initial={status}
                                         onChange={() => toggleStatus(bg.id)}
                                     />
                                 </td>

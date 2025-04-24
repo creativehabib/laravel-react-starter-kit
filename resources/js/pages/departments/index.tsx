@@ -54,7 +54,7 @@ export default function Index() {
             setOpenDeleteDialog(false); // Close the dialog after delete
         }
     };
-    const handleStatusToggle = (id: number) => {
+    const handleStatusToggle = async (id: number) => {
 
         // router.post(route('departments.toggle-status', id),  {
         //     headers: { Accept: 'application/json' },
@@ -63,7 +63,7 @@ export default function Index() {
         //     only: ['departments', 'flash'],
         // });
 
-        axios.post(`/departments/${id}/toggle-status`)
+        await axios.post(`/departments/${id}/toggle-status`)
             .then(response => {
                 router.reload();
                 toast.success(response.data.success);
