@@ -122,18 +122,10 @@ class DepartmentController extends Controller
         try {
             $department = Department::findOrFail($id);
             $department->update(['status' => !$department->status]);
-
-            $departments = Department::orderBy('created_at', 'desc')->with('user')->paginate(5)->withQueryString();
-            return Inertia::render('departments/index', [
-                'departments' => $departments,
-                'success' => $department->status ? 'Department activated.' : 'Department deactivated.',
-            ]);
+            return redirect()->back()->with('success',
+            $department->status ? 'Department activated.' : 'Department deactivated.');
         } catch (\Exception $e) {
-            $departments = Department::orderBy('created_at', 'desc')->with('user')->paginate(5)->withQueryString();
-            return Inertia::render('departments/index', [
-                'departments' => $departments,
-                'error' => 'Something went wrong!',
-            ]);
+            return redirect()->back()->with('error', 'Something went wrong!');
         }
     }
 

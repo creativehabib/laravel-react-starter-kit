@@ -126,20 +126,11 @@ class DesignationController extends Controller
         try {
             $designation = Designation::findOrFail($id);
             $designation->update(['status' => !$designation->status]);
-
-            $designations = Designation::orderBy('created_at', 'desc')->paginate(5)->withQueryString();
-
-            return Inertia::render('designations/index', [
-                'designations' => $designations,
-                'success' => $designation->status ? 'Designation activated.' : 'Designation deactivated.'
-            ]);
+            return redirect()->back()->with('success',
+                $designation->status ? 'Designation activated.' : 'Designation deactivated.');
 
         } catch (\Exception $e) {
-            $designations = Designation::orderBy('created_at', 'desc')->paginate(5)->withQueryString();
-            return Inertia::render('designations/index', [
-                'designations' => $designations,
-                'error' => 'Something went wrong!'
-            ]);
+            return redirect()->back()->with('error', 'Something went wrong!');
         }
     }
 
