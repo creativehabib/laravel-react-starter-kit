@@ -9,7 +9,6 @@ import { DesignationType, FlashProps, LinksType } from '@/types/globals';
 import DeleteDialog from '@/components/delete-dialog';
 import InertiaPagination from '@/components/inertia-pagination';
 import Toggle from '@/components/toggle';
-import axios from 'axios';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -55,21 +54,12 @@ export default function Index() {
         }
     };
 
-    const handleStatusToggle = async (id: number) => {
-        // router.post(route('designations.toggle-status', id), {}, {
-        //     preserveScroll: true,
-        //     preserveState: true,
-        //     only: ['designations', 'flash'],
-        // });
-        //
-        await axios.post(`/designations/${id}/toggle-status`)
-            .then(response => {
-                router.reload();
-                toast.success(response.data.success);
-            })
-            .catch(error => {
-                toast.error(error.response?.data?.error);
-            });
+    const handleStatusToggle = (id: number) => {
+        router.post(route('designations.toggle-status', id), {}, {
+            preserveScroll: true,
+            preserveState: true,
+            only: ['designations', 'flash'],
+        });
     };
 
     useEffect(() => {
