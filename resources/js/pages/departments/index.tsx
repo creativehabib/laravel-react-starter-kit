@@ -59,15 +59,6 @@ export default function Index() {
             preserveState: true,
             only: ['departments', 'flash'],
         });
-        //
-        // await axios.post(`/departments/${id}/toggle-status`)
-        //     .then(response => {
-        //         router.reload();
-        //         toast.success(response.data.success);
-        //     })
-        //     .catch(error => {
-        //         toast.error(error.response?.data?.error);
-        //     });
     };
 
     useEffect(() => {

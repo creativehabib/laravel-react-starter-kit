@@ -121,16 +121,25 @@ class DesignationController extends Controller
     }
 
 
-    public function toggleStatus($id): RedirectResponse
+    public function toggleStatus($id)
     {
         try {
             $designation = Designation::findOrFail($id);
             $designation->update(['status' => !$designation->status]);
-            return redirect()->back()->with('success',
-                $designation->status ? 'Designation activated.' : 'Designation deactivated.');
+
+            $designations = Designation::orderBy('created_at', 'desc')->paginate(5)->withQueryString();
+
+            return Inertia::render('designations/index', [
+                'designations' => $designations,
+                'success' => $designation->status ? 'Designation activated.' : 'Designation deactivated.'
+            ]);
 
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Something went wrong!');
+            $designations = Designation::orderBy('created_at', 'desc')->paginate(5)->withQueryString();
+            return Inertia::render('designations/index', [
+                'designations' => $designations,
+                'error' => 'Something went wrong!'
+            ]);
         }
     }
 

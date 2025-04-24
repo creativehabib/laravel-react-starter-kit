@@ -119,19 +119,21 @@ class DepartmentController extends Controller
 
     public function toggleStatus($id)
     {
-
-//        $department = Department::findOrFail($id);
-//        $department->status = !$department->status;
-//        $department->update(['status' => $department->status]);
-//        return back(303)->with('success', 'Status updated successfully.');
-
         try {
             $department = Department::findOrFail($id);
             $department->update(['status' => !$department->status]);
-            return redirect()->back()->with('success',
-            $department->status ? 'Department activated.' : 'Department deactivated.');
+
+            $departments = Department::orderBy('created_at', 'desc')->with('user')->paginate(5)->withQueryString();
+            return Inertia::render('departments/index', [
+                'departments' => $departments,
+                'success' => $department->status ? 'Department activated.' : 'Department deactivated.',
+            ]);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Something went wrong!');
+            $departments = Department::orderBy('created_at', 'desc')->with('user')->paginate(5)->withQueryString();
+            return Inertia::render('departments/index', [
+                'departments' => $departments,
+                'error' => 'Something went wrong!',
+            ]);
         }
     }
 

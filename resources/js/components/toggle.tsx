@@ -12,6 +12,7 @@ const Toggle: FC<ToggleProps> = ({ initial = false, onChange }) => {
   useEffect(() => {
     setEnabled(initial);
   }, [initial]);
+
   const handleToggle = () => {
     const newState = !enabled;
     setEnabled(newState);
