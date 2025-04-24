@@ -123,24 +123,10 @@ class DesignationController extends Controller
 
     public function toggleStatus($id)
     {
-
         $designation = Designation::findOrFail($id);
         $designation->status = !$designation->status;
         $designation->update(['status' => $designation->status]);
-        return back()->with('success', 'Status updated successfully.');
-//        try {
-//            $designation = Designation::findOrFail($id);
-//            $designation->update(['status' => !$designation->status]);
-//
-//            return response()->json([
-//                'success' => $designation->status ? 'Designation activated.' : 'Designation deactivated.',
-//                'status' => $designation->status,
-//            ], 200);
-//        } catch (\Exception $e) {
-//            return response()->json([
-//                'error' => 'Failed to update status.',
-//            ], 500);
-//        }
+        return redirect()->back()->with('success', 'Status updated successfully.');
     }
 
 
