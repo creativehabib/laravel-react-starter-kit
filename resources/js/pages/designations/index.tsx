@@ -58,7 +58,7 @@ export default function Index() {
         router.post(route('designations.toggle-status', id), {}, {
             preserveScroll: true,
             preserveState: true,
-            only: ['designations', 'flash'], // Only bring back updated data + flash
+            only: ['designations','flash'], // Only bring back updated data + flash
         });
     };
 
@@ -97,6 +97,7 @@ export default function Index() {
                                     <td className="border px-2 py-1">{designation.title}</td>
                                     <td className="border px-2 py-1 text-center w-fit">
                                         <Toggle initial={designation.status} onChange={ () => handleStatusToggle(designation.id)} />
+                                        {designation.status}
                                     </td>
                                     <td className="border px-2 py-1 text-center">
                                         {designation.created_at ? new Date(designation.created_at).toLocaleDateString() : '—'}
