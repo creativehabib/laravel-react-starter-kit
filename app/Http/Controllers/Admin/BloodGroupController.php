@@ -35,15 +35,11 @@ class BloodGroupController extends Controller
         try {
             $bloodGroup = BloodGroup::findOrFail($id);
             $bloodGroup->update(['status' => !$bloodGroup->status]);
-            return response()->json([
-                'status' => $bloodGroup->status,
-                'success' => $bloodGroup->status ? 'Blood group activated.' : 'Blood group deactivated.'
-            ]);
+            return redirect()->back()->with('success',
+            $bloodGroup->status ? 'Blood group activated.' : 'Blood group deactivated.');
 
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Something went wrong!'
-            ], 500);
+            return redirect()->back()->with('error', 'Something went wrong!');
         }
     }
 }

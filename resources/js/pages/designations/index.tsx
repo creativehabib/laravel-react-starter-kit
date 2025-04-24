@@ -58,7 +58,7 @@ export default function Index() {
         router.post(route('designations.toggle-status', id), {}, {
             preserveScroll: true,
             preserveState: true,
-            only: ['designations', 'flash'],
+            only: ['designations', 'flash'], // Only bring back updated data + flash
         });
     };
 

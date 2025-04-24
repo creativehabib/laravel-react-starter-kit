@@ -9,7 +9,6 @@ import { DepartmentType, FlashProps, LinksType } from '@/types/globals';
 import DeleteDialog from '@/components/delete-dialog';
 import InertiaPagination from '@/components/inertia-pagination';
 import Toggle from '@/components/toggle';
-import axios from 'axios';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -54,23 +53,21 @@ export default function Index() {
             setOpenDeleteDialog(false); // Close the dialog after delete
         }
     };
-    const handleStatusToggle = async (id: number) => {
-
-        // router.post(route('departments.toggle-status', id),  {
-        //     headers: { Accept: 'application/json' },
-        //     preserveScroll: true,
-        //     preserveState: true,
-        //     only: ['departments', 'flash'],
-        // });
-
-        await axios.post(`/departments/${id}/toggle-status`)
-            .then(response => {
-                router.reload();
-                toast.success(response.data.success);
-            })
-            .catch(error => {
-                toast.error(error.response?.data?.error);
-            });
+    const handleStatusToggle = (id: number) => {
+        router.post(route('departments.toggle-status', id), {},  {
+            preserveScroll: true,
+            preserveState: true,
+            only: ['departments', 'flash'],
+        });
+        //
+        // await axios.post(`/departments/${id}/toggle-status`)
+        //     .then(response => {
+        //         router.reload();
+        //         toast.success(response.data.success);
+        //     })
+        //     .catch(error => {
+        //         toast.error(error.response?.data?.error);
+        //     });
     };
 
     useEffect(() => {

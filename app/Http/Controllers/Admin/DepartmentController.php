@@ -128,15 +128,10 @@ class DepartmentController extends Controller
         try {
             $department = Department::findOrFail($id);
             $department->update(['status' => !$department->status]);
-
-            return response()->json([
-                'success' => $department->status ? 'Department activated.' : 'Department deactivated.',
-                'status' => $department->status,
-            ], 200);
+            return redirect()->back()->with('success',
+            $department->status ? 'Department activated.' : 'Department deactivated.');
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to update status.',
-            ], 500);
+            return redirect()->back()->with('error', 'Something went wrong!');
         }
     }
 
