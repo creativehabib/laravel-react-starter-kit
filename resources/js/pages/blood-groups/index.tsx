@@ -5,6 +5,7 @@ import React, { useEffect } from 'react';
 import Toggle from '@/components/toggle';
 import toast from 'react-hot-toast';
 import { FlashProps } from '@/types/globals';
+import axios from 'axios';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -27,7 +28,6 @@ interface PageProps {
 const BloodGroupsIndex: React.FC<PageProps> = ({ bloodGroups }) => {
     const { flash } = usePage<{flash: FlashProps}>().props;
     const { data, setData, post, reset } = useForm<{ name: string }>({ name: '' });
-    const [isToggling, setIsToggling] = React.useState(false);
 
     useEffect(() => {
         if (flash?.success) {
@@ -43,18 +43,15 @@ const BloodGroupsIndex: React.FC<PageProps> = ({ bloodGroups }) => {
     };
 
     const toggleStatus = (id: number) => {
-        setIsToggling(true);
-        router.post(route('blood-groups.toggle-status', id), {}, {
-            preserveScroll: true,
-            onSuccess: () => {
-                router.reload({
-                    only: ['bloodGroups'],
-                    onFinish: () => setIsToggling(false),
-                });
-            },
-        });
+        axios.post(`/blood-groups/${id}/toggle-status`).then(
+            response => {
+                router.reload();
+                toast.success(response.data.success);
+            }).catch(error => {
+                toast.error(error.response?.data?.error);
+            });
 
-
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

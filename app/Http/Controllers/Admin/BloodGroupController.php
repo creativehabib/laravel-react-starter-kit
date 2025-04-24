@@ -32,9 +32,18 @@ class BloodGroupController extends Controller
 
     public function toggleStatus($id)
     {
-        $bloodGroup = BloodGroup::findOrFail($id);
-        $bloodGroup->update(['status' => !$bloodGroup->status]);
+        try {
+            $bloodGroup = BloodGroup::findOrFail($id);
+            $bloodGroup->update(['status' => !$bloodGroup->status]);
+            return response()->json([
+                'status' => $bloodGroup->status,
+                'success' => $bloodGroup->status ? 'Blood group activated.' : 'Blood group deactivated.'
+            ]);
 
-        return redirect()->route('blood-groups.index')->with('success', 'Status updated.');
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Something went wrong!'
+            ], 500);
+        }
     }
 }

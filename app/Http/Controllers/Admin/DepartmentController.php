@@ -117,27 +117,27 @@ class DepartmentController extends Controller
         return redirect()->back()->with('success', 'Department deleted successfully.');
     }
 
-//    public function toggleStatus($id)
-//    {
-//        try{
-//            $department = Department::findOrFail($id);
-//            $department->update([
-//                'status' => $department->status,
-//            ]);
-//            return back(303)->with('success', 'Status updated successfully.');
-//        } catch (\Exception $e) {
-//            return back(303)->with('error', 'Failed to update status.');
-//        }
-//
-//    }
-
     public function toggleStatus($id)
     {
 
-        $department = Department::findOrFail($id);
-        $department->status = !$department->status;
-        $department->update(['status' => $department->status]);
-        return back(303)->with('success', 'Status updated successfully.');
+//        $department = Department::findOrFail($id);
+//        $department->status = !$department->status;
+//        $department->update(['status' => $department->status]);
+//        return back(303)->with('success', 'Status updated successfully.');
+
+        try {
+            $department = Department::findOrFail($id);
+            $department->update(['status' => !$department->status]);
+
+            return response()->json([
+                'success' => $department->status ? 'Department activated.' : 'Department deactivated.',
+                'status' => $department->status,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to update status.',
+            ], 500);
+        }
     }
 
 }
