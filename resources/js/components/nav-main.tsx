@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 export function NavMain({ items = [] }: { items: NavItem[] }) {
     const page = usePage();
     const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+    const [isCollapsed] = useState(false); // State to manage the collapsed sidebar
 
     const toggleMenu = (title: string) => {
         setOpenMenus((prev) => ({ ...prev, [title]: !prev[title] }));
@@ -29,7 +30,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
         setOpenMenus((prev) => ({ ...prev, ...expanded }));
     }, [items, page.url]);
 
-
+    // Toggle the sidebar collapse state
     return (
         <SidebarGroup className="px-2 py-0">
             <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -50,9 +51,15 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                     onClick={() => hasChildren && toggleMenu(item.title)}
                                 >
                                     {hasChildren ? (
-                                        <button type="button" className="flex w-full cursor-pointer items-center space-x-2">
-                                            {item.icon && <item.icon className="mr-2" />}
-                                            <span>{item.title}</span>
+                                        <button
+                                            type="button"
+                                            className="flex w-full cursor-pointer items-center space-x-2"
+                                        >
+                                            {/* Always show the parent menu icon */}
+                                            <span className={`mr-2 ${isCollapsed ? 'block' : ''}`}>
+                                                {item.icon && <item.icon />}
+                                            </span>
+                                            {!isCollapsed && <span className="whitespace-nowrap">{item.title}</span>}
                                             {openMenus[item.title] ? (
                                                 <ChevronDown className="ml-auto h-4 w-4" />
                                             ) : (
@@ -60,35 +67,38 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                             )}
                                         </button>
                                     ) : (
-                                        <Link href={item.href || '#'}>
-                                            {item.icon && <item.icon className="mr-2" />}
-                                            <span>{item.title}</span>
+                                        <Link href={item.href || '#'} className="flex items-center">
+                                            <span className={`mr-2 ${isCollapsed ? 'block' : ''}`}>
+                                                {item.icon && <item.icon />}
+                                            </span>
+                                            {!isCollapsed && <span className="whitespace-nowrap">{item.title}</span>}
                                         </Link>
                                     )}
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
 
+                            {/* Display child menu if open and sidebar is expanded or toggled */}
                             {hasChildren && openMenus[item.title] && (
                                 <div className="pl-6">
-                                {Array.isArray(item.children) &&
-                                    item.children.map((child) => (
-                                        <SidebarMenuItem key={child.title}>
-                                            <SidebarMenuButton
-                                                asChild
-                                                isActive={page.url.startsWith(child.href ?? '#')}
-                                                tooltip={{ children: child.title }}
-                                            >
-                                                <Link href={child.href || '#'}>
-                                                    {child.icon ? (
-                                                        <child.icon className="mr-2" />
-                                                    ) : (
-                                                        <FileText className="mr-2" />
-                                                    )}
-                                                    <span>{child.title}</span>
-                                                </Link>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    ))}
+                                    {Array.isArray(item.children) &&
+                                        item.children.map((child) => (
+                                            <SidebarMenuItem key={child.title}>
+                                                <SidebarMenuButton
+                                                    asChild
+                                                    isActive={child.href === page.url}
+                                                    tooltip={{ children: child.title }}
+                                                >
+                                                    <Link href={child.href || '#'}>
+                                                        {child.icon ? (
+                                                            <child.icon className="mr-2" />
+                                                        ) : (
+                                                            <FileText className="mr-2" />
+                                                        )}
+                                                        <span>{child.title}</span>
+                                                    </Link>
+                                                </SidebarMenuButton>
+                                            </SidebarMenuItem>
+                                        ))}
                                 </div>
                             )}
                         </div>
