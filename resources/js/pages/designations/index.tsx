@@ -61,6 +61,7 @@ export default function Index() {
             preserveState: true,
             only: ['designations','flash'], // Only bring back updated data + flash
         });
+        router.reload({ only: ['designations'] });
     };
 
     useEffect(() => {
