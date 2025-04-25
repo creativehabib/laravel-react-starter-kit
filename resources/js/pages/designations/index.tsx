@@ -102,6 +102,7 @@ export default function Index() {
                                         </td>
                                         <td className="border px-2 py-1 text-center">
                                             {designation.status ? 'Enabled' : 'Disabled'}
+                                            {designation.status}
                                         </td>
                                         <td className="border px-2 py-1 text-center">
                                             {designation.created_at ? new Date(designation.created_at).toLocaleDateString() : '—'}
