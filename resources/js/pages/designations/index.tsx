@@ -59,9 +59,11 @@ export default function Index() {
         router.post(route('designations.toggle-status', id), {}, {
             preserveScroll: true,
             preserveState: true,
-            only: ['designations','flash'], // Only bring back updated data + flash
+            onSuccess: () => {
+                // ✅ Refetch only 'designations' to update status correctly
+                router.reload({ only: ['designations'] });
+            },
         });
-        router.reload({ only: ['designations'] });
     };
 
     useEffect(() => {
