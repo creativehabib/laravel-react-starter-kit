@@ -9,6 +9,7 @@ import { DesignationType, FlashProps, LinksType } from '@/types/globals';
 import DeleteDialog from '@/components/delete-dialog';
 import InertiaPagination from '@/components/inertia-pagination';
 import Toggle from '@/components/toggle';
+import StatusToggle from '@/components/status-toggle';
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -55,14 +56,22 @@ export default function Index() {
         }
     };
 
-    const handleStatusToggle = (id: number) => {
-        router.post(route('designations.toggle-status', id), {}, {
+    // const handleStatusToggle = (id: number) => {
+    //     router.post(route('designations.toggle-status', id), {}, {
+    //         preserveScroll: true,
+    //         preserveState: true,
+    //         only: ['designations', 'flash'], // Make sure this matches your Inertia response
+    //         onSuccess: () => {
+    //             router.reload({ only: ['designations'] }); // 🔁 Force reload updated data
+    //         }
+    //     });
+    // };
+
+    const handleToggle = (id: number, newStatus: boolean) => {
+        router.post(route("designations.toggle-status", id), { status: newStatus }, {
             preserveScroll: true,
             preserveState: true,
-            only: ['designations', 'flash'], // Make sure this matches your Inertia response
-            onSuccess: () => {
-                router.reload({ only: ['designations'] }); // 🔁 Force reload updated data
-            }
+            only: ['designations', 'flash'],
         });
     };
 
@@ -101,7 +110,12 @@ export default function Index() {
                                         <td className="border px-2 py-1 text-center">{index + 1}</td>
                                         <td className="border px-2 py-1">{designation.title}</td>
                                         <td className="w-fit border px-2 py-1 text-center">
-                                            <Toggle initial={designation.status} onChange={() => handleStatusToggle(designation.id)} />
+                                            {/*<Toggle initial={designation.status} onChange={() => handleStatusToggle(designation.id)} />*/}
+                                            <StatusToggle
+                                                id={designation.id}
+                                                status={designation.status}
+                                                onToggle={handleToggle}
+                                            />
                                         </td>
                                         <td className="border px-2 py-1 text-center">
                                             {designation.status ? 'Enabled' : 'Disabled'}
