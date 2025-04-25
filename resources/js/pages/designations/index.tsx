@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 import { DesignationType, FlashProps, LinksType } from '@/types/globals';
 import DeleteDialog from '@/components/delete-dialog';
 import InertiaPagination from '@/components/inertia-pagination';
-import Toggle from '@/components/toggle';
 import StatusToggle from '@/components/status-toggle';
 
 
@@ -70,8 +69,7 @@ export default function Index() {
     const handleToggle = (id: number, newStatus: boolean) => {
         router.post(route("designations.toggle-status", id), { status: newStatus }, {
             preserveScroll: true,
-            preserveState: true,
-            only: ['designations', 'flash'],
+            only: ['designations'], // ← required to get updated data
         });
     };
 

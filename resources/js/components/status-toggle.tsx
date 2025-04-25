@@ -9,14 +9,15 @@ interface Props {
 const StatusToggle: FC<Props> = ({ id, status, onToggle }) => {
     const [checked, setChecked] = useState(status);
 
+    // 🔄 Sync when `status` from props changes (e.g., after backend update)
     useEffect(() => {
         setChecked(status);
     }, [status]);
 
     const handleChange = () => {
         const newStatus = !checked;
-        setChecked(newStatus);
-        onToggle(id, newStatus);
+        setChecked(newStatus); // Optimistically update UI
+        onToggle(id, newStatus); // Call parent to update backend
     };
 
     return (
