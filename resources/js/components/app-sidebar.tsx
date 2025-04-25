@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, LayoutGrid, GraduationCap, NotebookPen, BookUser, Container } from 'lucide-react';
+import { BookOpen, LayoutGrid, NotebookPen, ChevronRight, UserRoundCog } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -14,29 +14,22 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Designations',
-        href: '/designations',
-        icon: GraduationCap,
-    },
-    {
-        title: 'Departments',
-        href: '/departments',
-        icon: Container,
-    },
-    {
-        title: 'Employees',
-        href: '/employees',
-        icon: BookUser,
+        title: 'HR',
+        icon: UserRoundCog,
+        children: [
+            { title: 'Designations', href: '/designations', icon: ChevronRight},
+            { title: 'Departments', href: '/departments', icon: ChevronRight},
+            { title: 'Employees', href: '/employees', icon: ChevronRight},
+            { title: 'Attendance', href: '/attendance', icon: ChevronRight},
+            { title: 'Leave Requests', href: '/leave-requests', icon: ChevronRight},
+            { title: 'Holidays', href: '/holidays', icon: ChevronRight},
+            { title: 'Blood Groups', href: '/blood-groups', icon: ChevronRight},
+        ],
     },
     {
         title: 'Posts',
         href: '/posts',
         icon: NotebookPen,
-    },
-    {
-        title: 'Blood Groups',
-        href: '/blood-groups',
-        icon: BookOpen,
     },
 ];
 

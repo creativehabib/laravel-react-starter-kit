@@ -14,12 +14,12 @@ export interface NavGroup {
     title: string;
     items: NavItem[];
 }
-
 export interface NavItem {
     title: string;
-    href: string;
+    href?: string; // href can be optional for parent-only items
     icon?: LucideIcon | null;
     isActive?: boolean;
+    children?: NavItem[]; // 👈 Add this line
 }
 
 export interface SharedData {
