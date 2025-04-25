@@ -126,7 +126,9 @@ class DesignationController extends Controller
         try {
             $designation = Designation::findOrFail($id);
             $designation->update(['status' => !$designation->status]);
-            return redirect()->back()->with('success',
+            return Inertia::render('designations/index', [
+                'designations' => Designation::latest()->paginate(5)->withQueryString(),
+            ])->with('success',
                 $designation->status ? 'Designation activated.' : 'Designation deactivated.');
 
         } catch (\Exception $e) {

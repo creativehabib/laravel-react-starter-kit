@@ -55,9 +55,9 @@ export default function Index() {
     };
     const handleStatusToggle = (id: number) => {
         router.post(route('departments.toggle-status', id), {},  {
+            only: ['departments', 'flash'],
             preserveScroll: true,
             preserveState: true,
-            only: ['departments', 'flash'],
         });
     };
 

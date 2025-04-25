@@ -68,8 +68,8 @@ export default function Index() {
 
     const handleToggle = (id: number, newStatus: boolean) => {
         router.post(route("designations.toggle-status", id), { status: newStatus }, {
+            only: ['departments', 'flash'],
             preserveScroll: true,
-            only: ['designations'], // ← required to get updated data
         });
     };
 
