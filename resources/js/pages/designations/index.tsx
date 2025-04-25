@@ -101,7 +101,7 @@ export default function Index() {
                                             <Toggle initial={designation.status} onChange={() => handleStatusToggle(designation.id)} />
                                         </td>
                                         <td className="border px-2 py-1 text-center">
-                                            <input type={'checkbox'} className='cursor-pointer' checked={designation.status}/>
+                                            {designation.status ? 'Enabled' : 'Disabled'}
                                         </td>
                                         <td className="border px-2 py-1 text-center">
                                             {designation.created_at ? new Date(designation.created_at).toLocaleDateString() : '—'}
