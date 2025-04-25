@@ -59,10 +59,10 @@ export default function Index() {
         router.post(route('designations.toggle-status', id), {}, {
             preserveScroll: true,
             preserveState: true,
+            only: ['designations', 'flash'], // Make sure this matches your Inertia response
             onSuccess: () => {
-                // ✅ Refetch only 'designations' to update status correctly
-                router.reload({ only: ['designations'] });
-            },
+                router.reload({ only: ['designations'] }); // 🔁 Force reload updated data
+            }
         });
     };
 
