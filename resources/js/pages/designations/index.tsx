@@ -86,6 +86,7 @@ export default function Index() {
                                 <th className="border p-2">#</th>
                                 <th className="border p-2 text-start">Name</th>
                                 <th className="border p-2">Status</th>
+                                <th className="border p-2">Status Value</th>
                                 <th className="border p-2">Created At</th>
                                 <th className="border p-2">Action</th>
                             </tr>
@@ -97,6 +98,8 @@ export default function Index() {
                                     <td className="border px-2 py-1">{designation.title}</td>
                                     <td className="border px-2 py-1 text-center w-fit">
                                         <Toggle initial={designation.status} onChange={ () => handleStatusToggle(designation.id)} />
+                                    </td>
+                                    <td className="border px-2 py-1 text-center">
                                         {designation.status}
                                     </td>
                                     <td className="border px-2 py-1 text-center">
