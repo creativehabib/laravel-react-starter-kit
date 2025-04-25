@@ -4,10 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Designation;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -40,13 +37,15 @@ class DesignationController extends Controller
         $request->validate([
             'title' => 'required|string|max:255|unique:designations,title',
             'description' => 'nullable|string|max:255',
+            'status' => 'boolean',
         ]);
 
         try {
             $designation = Designation::create([
                 'title' => $request->input('title'),
                 'slug' => Str::slug($request->input('title')),
-                'description' => $request->input('description')
+                'description' => $request->input('description'),
+                'status' => $request->input('status') ? 1 : 0,
             ]);
 
             if ($designation) {
@@ -93,6 +92,7 @@ class DesignationController extends Controller
         $request->validate([
             'title' => 'required|string|max:255|unique:designations,title,'.$id,
             'description' => 'nullable|string|max:255',
+            'status' => 'boolean',
         ]);
 
         // Find the designation by ID
@@ -102,6 +102,7 @@ class DesignationController extends Controller
         $designation->update([
             'title' => $request->input('title'),
             'description' => $request->input('description'),
+            'status' => $request->input('status') ? 1 : 0,
         ]);
 
         // Redirect back with a flash success message

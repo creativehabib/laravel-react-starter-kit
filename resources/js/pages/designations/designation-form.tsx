@@ -16,11 +16,11 @@ import InputError from '@/components/input-error';
 import { LoaderCircle } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Designation } from '@/types/designation';
-import { FlashProps } from '@/types/global';
+import { DesignationType, FlashProps } from '@/types/globals';
+import Toggle from '@/components/toggle';
 
 interface DialogDemoProps {
-    designation?: Designation | null;
+    designation?: DesignationType | null;
     onClose: () => void;
 }
 
@@ -33,6 +33,7 @@ export function DialogDemo({ designation, onClose }: DialogDemoProps) {
     const { data, setData, post, put, processing, errors, reset } = useForm({
         title: '',
         description: '',
+        status: true as boolean,
     });
 
     const submit = (e: React.FormEvent) => {
@@ -59,6 +60,7 @@ export function DialogDemo({ designation, onClose }: DialogDemoProps) {
             setData({
                 title: designation.title,
                 description: designation.description || '',
+                status: designation.status ?? true,
             });
         } else if (!Object.keys(errors).length) {
             // ✅ Only close if there are no validation errors
@@ -118,6 +120,14 @@ export function DialogDemo({ designation, onClose }: DialogDemoProps) {
                             rows={4}
                         />
                         <InputError message={errors.description} />
+                    </div>
+                    <div>
+                        <Label htmlFor="status">Status</Label>
+                        <Toggle
+                            initial={data.status}
+                            onChange={(val) => setData('status', val)}
+                        />
+                        <InputError message={errors.status} />
                     </div>
                     <DialogFooter>
                         <Button type="submit" disabled={processing}>

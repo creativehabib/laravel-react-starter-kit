@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -7,20 +7,20 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useForm, usePage } from '@inertiajs/react';
 import InputError from '@/components/input-error';
 import { LoaderCircle } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Department } from '@/types/designation';
-import { FlashProps } from '@/types/global';
+import { DepartmentType, FlashProps } from '@/types/globals';
+import Toggle from "@/components/toggle"; // Make sure this exists
 
 interface DialogDemoProps {
-    department?: Department | null;
+    department?: DepartmentType | null;
     onClose: () => void;
 }
 
@@ -33,6 +33,7 @@ export function DialogDemo({ department, onClose }: DialogDemoProps) {
     const { data, setData, post, put, processing, errors, reset } = useForm({
         name: '',
         description: '',
+        status: true as boolean,
     });
 
     const submit = (e: React.FormEvent) => {
@@ -45,26 +46,26 @@ export function DialogDemo({ department, onClose }: DialogDemoProps) {
 
         method(url, {
             onSuccess: () => {
-                reset(); // Reset form after successful submission
-                setOpen(false); // Close the dialog
-                onClose(); // Call onClose to reset the selected department
+                reset();
+                setOpen(false);
+                onClose();
             },
         });
     };
 
     useEffect(() => {
-        // Don't auto-close the dialog if there are errors
         if (department) {
             setOpen(true);
             setData({
                 name: department.name,
                 description: department.description || '',
+                status: department.status ?? true,
             });
         } else if (!Object.keys(errors).length) {
-            // ✅ Only close if there are no validation errors
             setOpen(false);
             reset();
         }
+
         if (flash?.success && !shownFlash.current) {
             toast.success(flash.success);
             shownFlash.current = true;
@@ -79,7 +80,7 @@ export function DialogDemo({ department, onClose }: DialogDemoProps) {
     return (
         <Dialog open={open} onOpenChange={(val) => {
             setOpen(val);
-            if (!val) onClose(); // Reset on close
+            if (!val) onClose();
         }}>
             <DialogTrigger asChild>
                 {!isEditing && (
@@ -119,6 +120,16 @@ export function DialogDemo({ department, onClose }: DialogDemoProps) {
                         />
                         <InputError message={errors.description} />
                     </div>
+
+                    <div>
+                        <Label htmlFor="status">Status</Label>
+                        <Toggle
+                            initial={data.status}
+                            onChange={(val) => setData('status', val)}
+                        />
+                        <InputError message={errors.status} />
+                    </div>
+
                     <DialogFooter>
                         <Button type="submit" disabled={processing}>
                             {processing && <LoaderCircle className="animate-spin h-4 w-4 mr-2" />}

@@ -39,12 +39,14 @@ class DepartmentController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:departments,name',
             'description' => 'nullable|string|max:255',
+            'status' => 'boolean',
         ]);
 
         try {
             $designation = Department::create([
                 'name' => $request->input('name'),
                 'description' => $request->input('description'),
+                'status' => $request->input('status') ? 1 : 0,
                 'user_id' => auth()->user()->id,
             ]);
 
@@ -90,6 +92,7 @@ class DepartmentController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:departments,name,'.$id,
             'description' => 'nullable|string|max:255',
+            'status' => 'boolean',
         ]);
 
         // Find the designation by ID
@@ -100,6 +103,7 @@ class DepartmentController extends Controller
             'name' => $request->input('name'),
             'created_by' => auth()->user()->id,
             'description' => $request->input('description'),
+            'status' => $request->input('status') ? 1 : 0,
         ]);
 
         // Redirect back with a flash success message
