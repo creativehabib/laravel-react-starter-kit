@@ -82,49 +82,52 @@ export default function Index() {
                     <div className="overflow-hidden rounded-lg border">
                         <table className="w-full table-auto">
                             <thead>
-                            <tr className="bg-gray-700 text-white">
-                                <th className="border p-2">#</th>
-                                <th className="border p-2 text-start">Name</th>
-                                <th className="border p-2">Status</th>
-                                <th className="border p-2">Status Value</th>
-                                <th className="border p-2">Created At</th>
-                                <th className="border p-2">Action</th>
-                            </tr>
+                                <tr className="bg-gray-700 text-white">
+                                    <th className="border p-2">#</th>
+                                    <th className="border p-2 text-start">Name</th>
+                                    <th className="border p-2">Status</th>
+                                    <th className="border p-2">Status Value</th>
+                                    <th className="border p-2">Created At</th>
+                                    <th className="border p-2">Action</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {designations.data?.map((designation, index) => (
-                                <tr key={designation.id}>
-                                    <td className="border px-2 py-1 text-center">{index + 1}</td>
-                                    <td className="border px-2 py-1">{designation.title}</td>
-                                    <td className="border px-2 py-1 text-center w-fit">
-                                        <Toggle initial={designation.status} onChange={ () => handleStatusToggle(designation.id)} />
-                                    </td>
-                                    <td className="border px-2 py-1 text-center">
-                                        {designation.status}
-                                    </td>
-                                    <td className="border px-2 py-1 text-center">
-                                        {designation.created_at ? new Date(designation.created_at).toLocaleDateString() : '—'}
-                                    </td>
-                                    <td className="space-x-1 border px-2 py-1 text-center">
-                                        <button
-                                            className="rounded bg-blue-500 cursor-pointer px-3 py-1 text-white hover:bg-blue-600"
-                                            onClick={() => handleEdit(designation)}
-                                        >
-                                            <Edit size={16} />
-                                        </button>
-                                        <button
-                                            className="bg-red-500 text-white px-3 py-1 rounded cursor-pointer hover:bg-red-600"
-                                            onClick={() => handleDeleteClick(designation.id)}
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
+                                {designations.data?.map((designation, index) => (
+                                    <tr key={designation.id}>
+                                        <td className="border px-2 py-1 text-center">{index + 1}</td>
+                                        <td className="border px-2 py-1">{designation.title}</td>
+                                        <td className="w-fit border px-2 py-1 text-center">
+                                            <Toggle initial={designation.status} onChange={() => handleStatusToggle(designation.id)} />
+                                        </td>
+                                        <td className="border px-2 py-1 text-center">
+                                            <label className="inline-flex cursor-pointer items-center">
+                                                <input type="checkbox" value="" className="peer sr-only" checked={designation.status} onChange={() => handleStatusToggle(designation.id)} />
+                                                <div className="peer relative h-6 w-11 rounded-full bg-gray-200 peer-checked:bg-blue-600 peer-focus:ring-4 peer-focus:ring-blue-300 peer-focus:outline-none after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-checked:bg-blue-600 dark:peer-focus:ring-blue-800"></div>
+                                            </label>
+                                        </td>
+                                        <td className="border px-2 py-1 text-center">
+                                            {designation.created_at ? new Date(designation.created_at).toLocaleDateString() : '—'}
+                                        </td>
+                                        <td className="space-x-1 border px-2 py-1 text-center">
+                                            <button
+                                                className="cursor-pointer rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600"
+                                                onClick={() => handleEdit(designation)}
+                                            >
+                                                <Edit size={16} />
+                                            </button>
+                                            <button
+                                                className="cursor-pointer rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600"
+                                                onClick={() => handleDeleteClick(designation.id)}
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                         {/* <Pagination links={designations.links} /> */}
-                        <div className='mb-2'>
+                        <div className="mb-2">
                             <InertiaPagination meta={designations} />
                         </div>
                     </div>
@@ -139,6 +142,5 @@ export default function Index() {
                 description="Are you sure you want to delete this designation?"
             />
         </>
-
     );
 }
