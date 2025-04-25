@@ -122,9 +122,7 @@ class DepartmentController extends Controller
         try {
             $department = Department::findOrFail($id);
             $department->update(['status' => !$department->status]);
-            return Inertia::render('departments/index', [
-                'departments' => Department::latest()->with('user')->paginate(5)->withQueryString(),
-            ])->with('success',
+            return redirect()->back()->with('success',
             $department->status ? 'Department activated.' : 'Department deactivated.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Something went wrong!');
