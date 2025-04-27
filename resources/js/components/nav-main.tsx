@@ -69,7 +69,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                     ) : (
                                         <Link href={item.href || '#'} className="flex items-center">
                                             <span className={`mr-2 ${isCollapsed ? 'block' : ''}`}>
-                                                {item.icon && <item.icon />}
+                                                {item.icon && <item.icon className="h-4 w-4"/>}
                                             </span>
                                             {!isCollapsed && <span className="whitespace-nowrap">{item.title}</span>}
                                         </Link>
@@ -85,7 +85,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                             <SidebarMenuItem key={child.title}>
                                                 <SidebarMenuButton
                                                     asChild
-                                                    isActive={child.href === page.url}
+                                                    isActive={page.url.startsWith(child.href ?? '')}
                                                     tooltip={{ children: child.title }}
                                                 >
                                                     <Link href={child.href || '#'}>

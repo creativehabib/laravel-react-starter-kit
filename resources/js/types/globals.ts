@@ -56,3 +56,31 @@ export interface DepartmentType {
     user: UserType;
     department_image: string;
 }
+export interface EmployeeType {
+    id: number;
+    name: string;
+    email: string;
+    phone: string;
+    position: string;
+    designation: DesignationType;
+    department: DepartmentType;
+    user: UserType;
+    joining_date: string;
+    status: boolean;
+    date_of_birth: string;
+    blood_group: string;
+    emergency_contact: string;
+    employee_image: string;
+    present_address: string;
+    permanent_address: string;
+    bank_account_number: string;
+    bank_name: string;
+    pf_number: string;
+    verify: string;
+    about: string;
+    designation_id: number;
+    department_id: number;
+    user_id: number;
+    created_at: string;
+    updated_at: string;
+}
