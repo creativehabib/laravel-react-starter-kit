@@ -7,10 +7,10 @@ interface ToggleProps {
 }
 
 const Toggle: FC<ToggleProps> = ({ initial = false, onChange }) => {
-  const [enabled, setEnabled] = useState<boolean>(initial);
+  const [enabled, setEnabled] = useState<boolean>(!!Number(initial));
 
   useEffect(() => {
-    setEnabled(initial);
+    setEnabled(!!Number(initial));
   }, [initial]);
 
   const handleToggle = () => {
