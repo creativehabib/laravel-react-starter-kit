@@ -11,15 +11,17 @@ class BloodGroupController extends Controller
 {
     public function index()
     {
+        $bloodGroups = BloodGroup::orderBy('created_at', 'desc')->paginate(5)->withQueryString();
         return Inertia::render('blood-groups/index', [
-            'bloodGroups' => BloodGroup::all()
+            'bloodGroups' => $bloodGroups,
         ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:blood_groups,name'
+            'name' => 'required|unique:blood_groups,name',
+            'status' => 'boolean',
         ]);
 
         BloodGroup::create([
@@ -28,6 +30,31 @@ class BloodGroupController extends Controller
         ]);
 
         return redirect()->route('blood-groups.index')->with('success', 'Blood group added.');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|unique:blood_groups,name,' . $id
+        ]);
+
+        $bloodGroup = BloodGroup::findOrFail($id);
+        $bloodGroup->update([
+            'name' => $request->name,
+            'status' => true
+        ]);
+
+        return redirect()->route('blood-groups.index')->with('success', 'Blood group updated successfully.');
+    }
+
+    public function destroy($id){
+        try {
+            $bloodGroup = BloodGroup::findOrFail($id);
+            $bloodGroup->delete();
+            return redirect()->back()->with('success', 'Blood group deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong!');
+        }
     }
 
     public function toggleStatus($id)

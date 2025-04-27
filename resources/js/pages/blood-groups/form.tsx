@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
     Dialog,
     DialogContent,
@@ -7,29 +7,27 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { useForm } from '@inertiajs/react';
 import InputError from '@/components/input-error';
 import { LoaderCircle } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { DepartmentType } from '@/types/globals';
-import Toggle from "@/components/toggle"; // Make sure this exists
+import { BloodGroupType } from '@/types/globals';
+import Toggle from '@/components/toggle';
 
 interface DialogDemoProps {
-    department?: DepartmentType | null;
+    bloodGroup?: BloodGroupType | null;
     onClose: () => void;
 }
 
-export function DialogDemo({ department, onClose }: DialogDemoProps) {
-    const isEditing = Boolean(department);
+export function BloodGroupsDialog({ bloodGroup, onClose }: DialogDemoProps) {
+    const isEditing = Boolean(bloodGroup);
     const [open, setOpen] = useState(false);
 
     const { data, setData, post, put, processing, errors, reset } = useForm({
         name: '',
-        description: '',
         status: true as boolean,
     });
 
@@ -38,76 +36,66 @@ export function DialogDemo({ department, onClose }: DialogDemoProps) {
 
         const method = isEditing ? put : post;
         const url = isEditing
-            ? route('departments.update', department?.id)
-            : route('departments.store');
+            ? route('blood-groups.update', bloodGroup?.id)
+            : route('blood-groups.store');
 
         method(url, {
             onSuccess: () => {
-                reset();
-                setOpen(false);
-                onClose();
+                reset(); // Reset form after successful submission
+                setOpen(false); // Close the dialog
+                onClose(); // Call onClose to reset the selected designation
             },
         });
     };
 
     useEffect(() => {
-        if (department) {
+        // Don't auto-close the dialog if there are errors
+        if (bloodGroup) {
             setOpen(true);
             setData({
-                name: department.name,
-                description: department.description || '',
-                status: department.status ?? true,
+                name: bloodGroup.name,
+                status: bloodGroup.status ?? true,
             });
         } else if (!Object.keys(errors).length) {
+            // ✅ Only close if there are no validation errors
             setOpen(false);
             reset();
         }
-    }, [department, setData, reset, errors]);
+
+    }, [bloodGroup, setData, reset, errors]);
 
     return (
         <Dialog open={open} onOpenChange={(val) => {
             setOpen(val);
-            if (!val) onClose();
+            if (!val) onClose(); // Reset on close
         }}>
             <DialogTrigger asChild>
                 {!isEditing && (
                     <Button variant="outline" className="cursor-pointer">
-                        Add Department
+                        Add BloodGroup
                     </Button>
                 )}
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg w-full max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle>{isEditing ? 'Edit' : 'Add'} Department</DialogTitle>
+                    <DialogTitle>{isEditing ? 'Edit' : 'Add'} BloodGroup</DialogTitle>
                     <DialogDescription>
                         {isEditing
-                            ? 'Update the department details.'
+                            ? 'Update the blood group details.'
                             : 'Provide a name and description.'}
                     </DialogDescription>
                 </DialogHeader>
                 <form className="grid gap-4" onSubmit={submit}>
                     <div>
-                        <Label htmlFor="name">Name</Label>
+                        <Label htmlFor="title">Title</Label>
                         <Input
-                            id="name"
+                            id="title"
                             value={data.name}
                             onChange={(e) => setData('name', e.target.value)}
                             disabled={processing}
                         />
                         <InputError message={errors.name} />
                     </div>
-                    <div>
-                        <Label htmlFor="description">Description</Label>
-                        <Textarea
-                            id="description"
-                            value={data.description}
-                            onChange={(e) => setData('description', e.target.value)}
-                            disabled={processing}
-                            rows={4}
-                        />
-                        <InputError message={errors.description} />
-                    </div>
-
                     <div>
                         <Label htmlFor="status">Status</Label>
                         <Toggle
@@ -116,7 +104,6 @@ export function DialogDemo({ department, onClose }: DialogDemoProps) {
                         />
                         <InputError message={errors.status} />
                     </div>
-
                     <DialogFooter>
                         <Button type="submit" disabled={processing}>
                             {processing && <LoaderCircle className="animate-spin h-4 w-4 mr-2" />}

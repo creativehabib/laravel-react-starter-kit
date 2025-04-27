@@ -11,12 +11,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { useForm, usePage } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import InputError from '@/components/input-error';
 import { LoaderCircle } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
-import toast from 'react-hot-toast';
-import { DesignationType, FlashProps } from '@/types/globals';
+import React, { useEffect, useState } from 'react';
+import { DesignationType } from '@/types/globals';
 import Toggle from '@/components/toggle';
 
 interface DialogDemoProps {
@@ -26,9 +25,7 @@ interface DialogDemoProps {
 
 export function DialogDemo({ designation, onClose }: DialogDemoProps) {
     const isEditing = Boolean(designation);
-    const shownFlash = useRef(false);
     const [open, setOpen] = useState(false);
-    const { flash } = usePage<{ flash: FlashProps }>().props;
 
     const { data, setData, post, put, processing, errors, reset } = useForm({
         title: '',
@@ -67,16 +64,7 @@ export function DialogDemo({ designation, onClose }: DialogDemoProps) {
             setOpen(false);
             reset();
         }
-        if (flash?.success && !shownFlash.current) {
-            toast.success(flash.success);
-            shownFlash.current = true;
-        }
-
-        if (flash?.error && !shownFlash.current) {
-            toast.error(flash.error);
-            shownFlash.current = true;
-        }
-    }, [designation, setData, reset, flash, errors]);
+    }, [designation, setData, reset, errors]);
 
     return (
         <Dialog open={open} onOpenChange={(val) => {
@@ -124,7 +112,7 @@ export function DialogDemo({ designation, onClose }: DialogDemoProps) {
                     <div>
                         <Label htmlFor="status">Status</Label>
                         <Toggle
-                            initial={data.status}
+                            initial={!!Number(data.status)}
                             onChange={(val) => setData('status', val)}
                         />
                         <InputError message={errors.status} />

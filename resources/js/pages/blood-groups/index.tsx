@@ -1,10 +1,14 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import React, { useEffect } from 'react';
 import Toggle from '@/components/toggle';
 import toast from 'react-hot-toast';
-import { FlashProps } from '@/types/globals';
+import { BloodGroupType, FlashProps, LinksType } from '@/types/globals';
+import InertiaPagination from '@/components/inertia-pagination';
+import { Edit, Trash2 } from 'lucide-react';
+import DeleteDialog from '@/components/delete-dialog';
+import { BloodGroupsDialog } from '@/pages/blood-groups/form';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -13,91 +17,133 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 interface BloodGroup {
-    id: number;
-    name: string;
-    status: boolean;
-    created_at: string;
-    updated_at: string;
+    data: BloodGroupType[];
+    links: LinksType[];
+    current_page: number;
+    last_page: number;
+    from: number;
+    to: number;
+    total: number;
 }
 
-interface PageProps {
-    bloodGroups: BloodGroup[];
-
-}
-const BloodGroupsIndex: React.FC<PageProps> = ({ bloodGroups }) => {
+const BloodGroupsIndex = () => {
     const { flash } = usePage<{flash: FlashProps}>().props;
-    const { data, setData, post, reset } = useForm<{ name: string }>({ name: '' });
-    const [isToggling, setIsToggling] = React.useState(false);
+    const [editing, setEditing] = React.useState<BloodGroupType | null>(null);
+    const { bloodGroups } = usePage<{ bloodGroups: BloodGroup }>().props;
+    const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+    const [bloodGroupToDelete, setBloodGroupToDelete] = React.useState<number | null>(null);
 
+    const handleEdit = (bloodGroup: BloodGroupType) => {
+        setEditing(bloodGroup);
+    };
+
+    const handleDeleteClick = (id: number) => {
+        setBloodGroupToDelete(id);
+        setOpenDeleteDialog(true);
+    };
+
+    const handleDelete = () => {
+        if (bloodGroupToDelete !== null) {
+            router.delete(route('blood-groups.destroy', bloodGroupToDelete), {
+                preserveScroll: true,
+                preserveState: true,
+                only: ['bloodGroups', 'flash'],
+            });
+            setOpenDeleteDialog(false);
+        }
+    };
     useEffect(() => {
         if (flash?.success) {
             toast.success(flash.success);
         }
+        if( flash?.error) {
+            toast.error(flash.error);
+        }
 
     }, [flash]);
 
-    const submit = (e: React.FormEvent) => {
-        e.preventDefault();
-        post(route('blood-groups.store'));
-        reset();
-    };
-
     const toggleStatus = (id: number) => {
-        setIsToggling(true);
         router.post(route('blood-groups.toggle-status', id), {}, {
             preserveScroll: true,
             preserveState: true,
             only: ['bloodGroups', 'flash'],
         });
-        setIsToggling(false);
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Blood Groups" />
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="p-4">
-                    <h1 className="text-xl font-bold mb-4">Blood Groups</h1>
-
-                    <form onSubmit={submit} className="mb-6">
-                        <input
-                            type="text"
-                            value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
-                            placeholder="New blood group"
-                            className="border p-2 rounded mr-2"
-                        />
-                        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-                            Add
-                        </button>
-                    </form>
-
-                    <table className="w-full table-auto border">
-                        <thead>
-                        <tr className="bg-gray-100">
-                            <th className="p-2 border">Name</th>
-                            <th className="p-2 border">Status</th>
-                            <th className="p-2 border">Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {bloodGroups.map((bg) => (
-                            <tr key={bg.id}>
-                                <td className="p-2 border">{bg.name}</td>
-                                <td className="p-2 border">{bg.status ? 'Enabled' : 'Disabled'}</td>
-                                <td className="p-2 border">
-                                    <Toggle
-                                        initial={isToggling ? false : bg.status}
-                                        onChange={() => toggleStatus(bg.id)}
-                                    />
-                                </td>
+        <>
+            <AppLayout breadcrumbs={breadcrumbs}>
+                <Head title="Blood Groups" />
+                <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+                    <div className="ml-auto">
+                        <BloodGroupsDialog bloodGroup={editing} onClose={() => setEditing(null)} />
+                    </div>
+                    <div className="overflow-hidden rounded-lg border">
+                        <table className="w-full table-auto">
+                            <thead>
+                            <tr className="bg-gray-700 text-white">
+                                <th className="border p-2">#</th>
+                                <th className="border p-2 text-start">Blood Group</th>
+                                <th className="border p-2">Status</th>
+                                <th className="border p-2">Created At</th>
+                                <th className="border p-2">Actions</th>
                             </tr>
-                        ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {bloodGroups.data.length > 0 ? (
+                                bloodGroups.data.map((bloodGroup, index) => (
+                                    <tr key={bloodGroup.id}>
+                                        <td className="border px-2 py-1 text-center">{index + 1}</td>
+                                        <td className="border px-2 py-1">{bloodGroup.name}</td>
+                                        <td className="border px-2 py-1 text-center">
+                                            <Toggle
+                                                initial={bloodGroup.status}
+                                                onChange={() => toggleStatus(bloodGroup.id)}
+                                            />
+                                        </td>
+                                        <td className="border px-2 py-1 text-center">
+                                            {bloodGroup.created_at
+                                                ? new Date(bloodGroup.created_at).toLocaleDateString()
+                                                : '—'}
+                                        </td>
+                                        <td className="space-x-1 border px-2 py-1 text-center">
+                                            {/* Add your action buttons here */}
+                                            <button
+                                                className="rounded bg-blue-500 cursor-pointer px-3 py-1 text-white hover:bg-blue-600"
+                                                onClick={() => handleEdit(bloodGroup)}
+                                            >
+                                                <Edit size={16} />
+                                            </button>
+                                            <button
+                                                className="bg-red-500 text-white px-3 py-1 rounded cursor-pointer hover:bg-red-600"
+                                                onClick={() => handleDeleteClick(bloodGroup.id)}
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={5} className="border px-2 py-4 text-center">
+                                        No blood groups found.
+                                    </td>
+                                </tr>
+                            )}
+                            </tbody>
+                        </table>
+                        <InertiaPagination meta={bloodGroups} />
+                    </div>
                 </div>
-            </div>
-        </AppLayout>
+            </AppLayout>
+            <DeleteDialog
+                open={openDeleteDialog}
+                onClose={() => setOpenDeleteDialog(false)}
+                onConfirm={handleDelete}
+                title="Confirm Deletion"
+                description="Are you sure you want to delete this blood group?"
+            />
+        </>
     );
 }
 export default BloodGroupsIndex;
