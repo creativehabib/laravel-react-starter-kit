@@ -34,17 +34,23 @@ class BloodGroupController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Validate the request
         $request->validate([
-            'name' => 'required|unique:blood_groups,name,' . $id
+            'name' => 'required|string|max:255|unique:blood_groups,name,'.$id,
+            'status' => 'boolean'
         ]);
 
+        // Find the designation by ID
         $bloodGroup = BloodGroup::findOrFail($id);
+
+        // Update the designation
         $bloodGroup->update([
-            'name' => $request->name,
-            'status' => true
+            'name' => $request->input('name'),
+            'status' => $request->input('status') ? 1 : 0,
         ]);
 
-        return redirect()->route('blood-groups.index')->with('success', 'Blood group updated successfully.');
+        // Redirect back with a flash success message
+        return redirect()->back()->with('success', 'BloodGroup updated successfully.');
     }
 
     public function destroy($id){

@@ -87,9 +87,9 @@ export function BloodGroupsDialog({ bloodGroup, onClose }: DialogDemoProps) {
                 </DialogHeader>
                 <form className="grid gap-4" onSubmit={submit}>
                     <div>
-                        <Label htmlFor="title">Title</Label>
+                        <Label htmlFor="name">Name</Label>
                         <Input
-                            id="title"
+                            id="name"
                             value={data.name}
                             onChange={(e) => setData('name', e.target.value)}
                             disabled={processing}
