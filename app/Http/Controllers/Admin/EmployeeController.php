@@ -42,7 +42,8 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+
+        $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:employees,email',
             'position' => 'nullable|string|max:255',
@@ -57,9 +58,21 @@ class EmployeeController extends Controller
 
         try {
             Employee::create([
-                $validated,
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'position' => $request->input('position'),
+                'about' => $request->input('about'),
+                'department_id' => $request->input('department_id'),
+                'designation_id' => $request->input('designation_id'),
+                'status' => $request->input('status') ? 1 : 0,
+                'phone' => $request->input('phone'),
+                'present_address' => $request->input('present_address'),
+                'permanent_address' => $request->input('permanent_address'),
+                'emergency_contact' => $request->input('emergency_contact'),
+                'blood_group' => $request->input('blood_group'),
+                'date_of_birth' => $request->input('date_of_birth'),
                 'user_id' => auth()->user()->id,
-            ]); // ✅ Only safe validated data
+            ]);
             return redirect()->back()->with('success', 'Employee created successfully!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Something went wrong! ' . $e->getMessage());

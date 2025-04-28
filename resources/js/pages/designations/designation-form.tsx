@@ -35,7 +35,6 @@ export function DialogDemo({ designation, onClose }: DialogDemoProps) {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-
         const method = isEditing ? put : post;
         const url = isEditing
             ? route('designations.update', designation?.id)

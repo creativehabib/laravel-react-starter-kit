@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useForm, usePage } from "@inertiajs/react";
+import { useForm } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import {
     Drawer,
@@ -15,29 +15,26 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import InputError from "@/components/input-error";
-import { DepartmentType, DesignationType, EmployeeType, FlashProps } from "@/types/globals";
-import toast from "react-hot-toast";
-import { useRef } from "react";
+import { DepartmentType, DesignationType, EmployeeType } from "@/types/globals";
+import Toggle from '@/components/toggle';
 
 interface EmployeeDrawerProps {
     employee?: EmployeeType | null;
     departments: DepartmentType[];
     designations: DesignationType[];
     triggerLabel?: string;
-    setEditingEmployee: (employee: EmployeeType | null) => void;
+    onClose: () => void;
 }
 
 export function EmployeeDrawer({
        employee = null,
        departments = [],
        designations = [],
-       triggerLabel = "Add Employee",
-       setEditingEmployee,
+       triggerLabel,
+       onClose,
    }: EmployeeDrawerProps) {
     const isEditing = Boolean(employee);
     const [open, setOpen] = React.useState(false);
-    const { flash } = usePage<{ flash: FlashProps }>().props;
-    const shownFlash = useRef(false);
 
     const { data, setData, post, put, processing, reset, errors } = useForm({
         name: "",
@@ -46,7 +43,7 @@ export function EmployeeDrawer({
         about: "",
         department_id: "", // <- make empty string
         designation_id: "", // <- make empty string
-        status: false,
+        status: true as boolean,
         phone: "",
         present_address: "",
         permanent_address: "",
@@ -54,40 +51,32 @@ export function EmployeeDrawer({
 
     React.useEffect(() => {
         if (employee) {
-            setData({
-                name: employee.name,
-                email: employee.email,
-                position: employee.position,
-                user_id: 1,
-                about: employee.about,
-                department_id: employee.department_id ? String(employee.department_id) : "",
-                designation_id: employee.designation_id ? String(employee.designation_id) : "",
-                status: employee.status,
-                phone: employee.phone,
-                present_address: employee.present_address,
-                permanent_address: employee.permanent_address,
-            });
             setOpen(true);
-        } else {
+            setData({
+                name: employee.name ?? "",
+                email: employee.email ?? "",
+                position: employee.position ?? "",
+                about: employee.about ?? "",
+                department_id: employee.department_id ?? "",
+                designation_id: employee.designation_id ?? "",
+                status: employee.status ?? true,
+                phone: employee.phone ?? "",
+                present_address: employee.present_address ?? "",
+                permanent_address: employee.permanent_address ?? "",
+            });
+
+        } else if (!Object.keys(errors).length) {
+            setOpen(false);
             reset();
         }
 
-        if (flash?.success && !shownFlash.current) {
-            toast.success(flash.success);
-            shownFlash.current = true;
-        }
-
-        if (flash?.error && !shownFlash.current) {
-            toast.error(flash.error);
-            shownFlash.current = true;
-        }
-    }, [employee, flash, reset, setData]);
+    }, [employee, errors, reset, setData]);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
         const { name, type } = e.target;
-        setData(name as keyof typeof data, type === "checkbox" ? ((e.target as HTMLInputElement).checked ? true : false) : e.target.value);
+        setData(name as keyof typeof data, type === "checkbox" ? ((e.target as HTMLInputElement).checked ? "true" : false) : e.target.value);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -101,26 +90,28 @@ export function EmployeeDrawer({
             onSuccess: () => {
                 reset();
                 setOpen(false);
-                setEditingEmployee(null);
+                onClose();
             },
         });
     };
 
     const handleClose = () => {
-        setOpen(false);
         reset();
-        setEditingEmployee(null);
+        setOpen(false);
+        onClose();
     };
 
     return (
-        <Drawer open={open} onOpenChange={(isOpen) => setOpen(isOpen)} direction="right">
+        <Drawer open={open} onOpenChange={(val) => {
+            setOpen(val);
+            if (!val) onClose(); // Reset on close
+        }} direction="right">
             <DrawerTrigger asChild>
                 <Button
                     variant="outline"
                     onClick={() => {
-                        setEditingEmployee(null);
-                        reset(); // 💥 Important to clear old data when "Add New"
-                        shownFlash.current = false;
+                        onClose();
+                        reset();
                     }}
                 >
                     {triggerLabel}
@@ -133,7 +124,7 @@ export function EmployeeDrawer({
                     <DrawerHeader className="border-b">
                         <div className="flex justify-between items-center">
                             <div>
-                                <DrawerTitle>{isEditing ? "Edit Employee" : "New Employee"}</DrawerTitle>
+                                <DrawerTitle>{isEditing ? "Edit" : "New"} Employee</DrawerTitle>
                                 <DrawerDescription>
                                     {isEditing ? "Update employee details." : "Fill in employee details."}
                                 </DrawerDescription>
@@ -239,14 +230,14 @@ export function EmployeeDrawer({
 
                         {/* Status */}
                         <div className="flex items-center space-x-2">
-                            <Input
-                                id="status"
-                                name="status"
-                                type="checkbox"
-                                checked={data.status}
-                                onChange={handleChange}
-                            />
-                            <Label htmlFor="status">Active</Label>
+                            <div>
+                                <Label htmlFor="status">Status</Label>
+                                <Toggle
+                                    initial={!!Number(data.status)}
+                                    onChange={(val: boolean) => setData('status', val)}
+                                />
+                                <InputError message={errors.status} />
+                            </div>
                         </div>
                     </div>
 

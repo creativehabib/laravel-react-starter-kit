@@ -29,7 +29,7 @@ class BloodGroupController extends Controller
             'status' => true
         ]);
 
-        return redirect()->route('blood-groups.index')->with('success', 'Blood group added.');
+        return redirect()->route('blood-groups.index')->with('success', 'Blood group added successfully.');
     }
 
     public function update(Request $request, $id)

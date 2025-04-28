@@ -80,7 +80,7 @@ export default function Index() {
                             triggerLabel="Add Employee"
                             departments={departments}
                             designations={designations}
-                            setEditingEmployee={setEditing}
+                            onClose={() => setEditing(null)}
                         />
                     </div>
 
