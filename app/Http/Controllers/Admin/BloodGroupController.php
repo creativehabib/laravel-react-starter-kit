@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\BloodGroupResource;
 use App\Models\BloodGroup;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,9 +12,10 @@ class BloodGroupController extends Controller
 {
     public function index()
     {
-        $bloodGroups = BloodGroup::orderBy('created_at', 'desc')->paginate(5)->withQueryString();
+        $query = BloodGroup::query()->orderBy('created_at', 'desc');
+        $bloodGroups = $query->paginate(5)->withQueryString();
         return Inertia::render('blood-groups/index', [
-            'bloodGroups' => $bloodGroups,
+            'bloodGroups' => BloodGroupResource::collection($bloodGroups),
         ]);
     }
 

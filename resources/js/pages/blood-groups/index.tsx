@@ -4,7 +4,7 @@ import { Head, router, usePage } from '@inertiajs/react';
 import React, { useEffect } from 'react';
 import Toggle from '@/components/toggle';
 import toast from 'react-hot-toast';
-import { BloodGroupType, FlashProps, LinksType } from '@/types/globals';
+import { BloodGroupType, FlashProps, LinksType, MetaType } from '@/types/globals';
 import InertiaPagination from '@/components/inertia-pagination';
 import { Edit, Trash2 } from 'lucide-react';
 import DeleteDialog from '@/components/delete-dialog';
@@ -17,6 +17,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 interface BloodGroup {
+    meta: MetaType;
     data: BloodGroupType[];
     links: LinksType[];
     current_page: number;
@@ -93,18 +94,18 @@ const BloodGroupsIndex = () => {
                             {bloodGroups.data.length > 0 ? (
                                 bloodGroups.data.map((bloodGroup, index) => (
                                     <tr key={bloodGroup.id}>
-                                        <td className="border px-2 py-1 text-center">{index + 1}</td>
+                                        <td className="border px-2 py-1 text-center">{bloodGroups.meta.from + index}</td>
                                         <td className="border px-2 py-1">{bloodGroup.name}</td>
                                         <td className="border px-2 py-1 text-center">
-                                            <Toggle
-                                                initial={bloodGroup.status}
-                                                onChange={() => toggleStatus(bloodGroup.id)}
-                                            />
+                                            <div className="flex justify-center items-center">
+                                                <Toggle
+                                                    initial={bloodGroup.status}
+                                                    onChange={() => toggleStatus(bloodGroup.id)}
+                                                />
+                                            </div>
                                         </td>
                                         <td className="border px-2 py-1 text-center">
-                                            {bloodGroup.created_at
-                                                ? new Date(bloodGroup.created_at).toLocaleDateString()
-                                                : '—'}
+                                            {bloodGroup.created_at}
                                         </td>
                                         <td className="space-x-1 border px-2 py-1 text-center">
                                             {/* Add your action buttons here */}
@@ -132,7 +133,7 @@ const BloodGroupsIndex = () => {
                             )}
                             </tbody>
                         </table>
-                        <InertiaPagination meta={bloodGroups} />
+                        <InertiaPagination meta={bloodGroups.meta} />
                     </div>
                 </div>
             </AppLayout>

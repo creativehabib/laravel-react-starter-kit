@@ -1,7 +1,7 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { DepartmentType, DesignationType, EmployeeType, FlashProps, LinksType } from '@/types/globals';
+import { DepartmentType, DesignationType, EmployeeType, FlashProps, LinksType, MetaType } from '@/types/globals';
 import { useEffect, useState } from 'react';
 import { Edit, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -16,6 +16,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface EmployeesType {
+    meta: MetaType;
     data: EmployeeType[];
     links: LinksType[];
     triggerLabel?: string; // button label
@@ -98,18 +99,24 @@ export default function Index() {
                             </tr>
                             </thead>
                             <tbody>
+                            {/*<pre>{JSON.stringify(employees, undefined,2)}</pre>*/}
                             {employees.data.map((employee, index) => (
                                 <tr key={employee.id}>
-                                    <td className="border px-2 py-1 text-center">{index + 1}</td>
+                                    <td className="border px-2 py-1 text-center">{employees.meta.from + index}</td>
                                     <td className="border px-2 py-1">{employee.name}</td>
                                     <td className="border px-2 py-1">{employee.department?.name ?? '—'}</td>
                                     <td className='border px-2 py-1'>
                                         {employee.designation?.title ?? '—'}</td>
                                     <td className="border px-2 py-1 text-center">
-                                        <Toggle initial={employee.status} onChange={() => handleStatusToggle(employee.id)} />
+                                        <div className="flex justify-center items-center">
+                                            <Toggle
+                                                initial={employee.status}
+                                                onChange={() => handleStatusToggle(employee.id)}
+                                            />
+                                        </div>
                                     </td>
                                     <td className="border px-2 py-1 text-center">
-                                        {employee.created_at ? new Date(employee.created_at).toLocaleDateString() : '—'}
+                                        {employee.created_at}
                                     </td>
                                     <td className="border px-2 py-1 text-center space-x-1">
                                         <button
@@ -131,7 +138,7 @@ export default function Index() {
                         </table>
 
                         <div className="mb-2">
-                            <InertiaPagination meta={employees} />
+                            <InertiaPagination meta={employees.meta} />
                         </div>
                     </div>
                 </div>

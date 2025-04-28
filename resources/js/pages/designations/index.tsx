@@ -5,7 +5,7 @@ import { DialogDemo } from '@/pages/designations/designation-form';
 import { Edit, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
-import { DesignationType, FlashProps, LinksType } from '@/types/globals';
+import { DesignationType, FlashProps, LinksType, MetaType } from '@/types/globals';
 import DeleteDialog from '@/components/delete-dialog';
 import InertiaPagination from '@/components/inertia-pagination';
 import Toggle from '@/components/toggle';
@@ -19,6 +19,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface DesignationsType {
+    meta: MetaType;
     data: DesignationType[];
     links: LinksType[];
     current_page: number;
@@ -87,7 +88,6 @@ export default function Index() {
                                     <th className="border p-2">#</th>
                                     <th className="border p-2 text-start">Name</th>
                                     <th className="border p-2">Status</th>
-                                    <th className="border p-2">Status Value</th>
                                     <th className="border p-2">Created At</th>
                                     <th className="border p-2">Action</th>
                                 </tr>
@@ -95,16 +95,18 @@ export default function Index() {
                             <tbody>
                                 {designations.data?.map((designation, index) => (
                                     <tr key={designation.id}>
-                                        <td className="border px-2 py-1 text-center">{index + 1}</td>
+                                        <td className="border px-2 py-1 text-center">{designations.meta.from + index}</td>
                                         <td className="border px-2 py-1">{designation.title}</td>
                                         <td className="w-fit border px-2 py-1 text-center">
-                                            <Toggle initial={designation.status} onChange={() => handleStatusToggle(designation.id)} />
+                                            <div className="flex justify-center items-center">
+                                                <Toggle
+                                                    initial={designation.status}
+                                                    onChange={() => handleStatusToggle(designation.id)}
+                                                />
+                                            </div>
                                         </td>
                                         <td className="border px-2 py-1 text-center">
-                                            {Number(designation.status) === 1 ? 'Active' : 'Inactive'}
-                                        </td>
-                                        <td className="border px-2 py-1 text-center">
-                                            {designation.created_at ? new Date(designation.created_at).toLocaleDateString() : '—'}
+                                            {designation.created_at}
                                         </td>
                                         <td className="space-x-1 border px-2 py-1 text-center">
                                             <button
@@ -126,7 +128,7 @@ export default function Index() {
                         </table>
                         {/* <Pagination links={designations.links} /> */}
                         <div className="mb-2">
-                            <InertiaPagination meta={designations} />
+                            <InertiaPagination meta={designations.meta} />
                         </div>
                     </div>
                 </div>

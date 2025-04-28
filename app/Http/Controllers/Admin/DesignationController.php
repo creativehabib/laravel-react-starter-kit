@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\DesignationResource;
 use App\Models\Designation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -15,9 +16,10 @@ class DesignationController extends Controller
      */
     public function index()
     {
-        $designations = Designation::orderBy('created_at', 'desc')->paginate(5)->withQueryString();
+        $query = Designation::query()->orderBy('created_at', 'desc');
+        $designations = $query->paginate(5)->withQueryString();
         return Inertia::render('designations/index', [
-            'designations' => $designations,
+            'designations' => DesignationResource::collection($designations),
         ]);
     }
 

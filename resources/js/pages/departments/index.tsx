@@ -5,7 +5,7 @@ import { DialogDemo } from '@/pages/departments/department-form';
 import { Edit, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
-import { DepartmentType, FlashProps, LinksType } from '@/types/globals';
+import { DepartmentType, FlashProps, LinksType, MetaType } from '@/types/globals';
 import DeleteDialog from '@/components/delete-dialog';
 import InertiaPagination from '@/components/inertia-pagination';
 import Toggle from '@/components/toggle';
@@ -18,6 +18,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface DepartmentsType {
+    meta: MetaType;
     data: DepartmentType[];
     links: LinksType[];
     current_page: number;
@@ -93,14 +94,19 @@ export default function Index() {
                             <tbody>
                             {departments.data?.map((department, index) => (
                                 <tr key={department.id}>
-                                    <td className="border px-2 py-1 text-center">{index + 1}</td>
+                                    <td className="border px-2 py-1 text-center">{departments.meta.from + index}</td>
                                     <td className="border px-2 py-1">{department.name}</td>
                                     <td className="border px-2 py-1">{department.user.name}</td>
                                     <td className="border px-2 py-1 text-center">
-                                        <Toggle initial={department.status} onChange={ () => handleStatusToggle(department.id)} />
+                                        <div className="flex justify-center items-center">
+                                            <Toggle
+                                                initial={department.status}
+                                                onChange={() => handleStatusToggle(department.id)}
+                                            />
+                                        </div>
                                     </td>
                                     <td className="border px-2 py-1 text-center">
-                                        {department.created_at ? new Date(department.created_at).toLocaleDateString() : '—'}
+                                        {department.created_at}
                                     </td>
                                     <td className="space-x-1 border px-2 py-1 text-center">
                                         <button
@@ -122,7 +128,7 @@ export default function Index() {
                         </table>
                         {/* <Pagination links={departments.links} /> */}
                         <div className='mb-2'>
-                            <InertiaPagination meta={departments} />
+                            <InertiaPagination meta={departments.meta} />
                         </div>
                     </div>
                 </div>

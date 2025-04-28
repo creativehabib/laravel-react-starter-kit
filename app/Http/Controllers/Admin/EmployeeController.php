@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\EmployeeResource;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\Employee;
@@ -16,15 +17,10 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = Employee::orderBy('created_at', 'desc')
-            ->with(['designation', 'department'])
-            ->paginate(5)
-            ->withQueryString();
-
+        $query = Employee::query()->orderBy('created_at', 'desc');
+        $employees = $query->paginate(5)->withQueryString();
         return Inertia::render('employees/index', [
-            'employees' => $employees,
-            'departments' => Department::all(['id', 'name']),
-            'designations' => Designation::all(['id', 'title']),
+            'employees' => EmployeeResource::collection($employees),
         ]);
 
     }
