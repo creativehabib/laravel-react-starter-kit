@@ -113,13 +113,13 @@ export default function Index() {
                                     </td>
                                     <td className="border px-2 py-1 text-center space-x-1">
                                         <button
-                                            className="rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600"
+                                            className="rounded bg-blue-500 cursor-pointer px-3 py-1 text-white hover:bg-blue-600"
                                             onClick={() => handleEdit(employee)}
                                         >
                                             <Edit size={16} />
                                         </button>
                                         <button
-                                            className="rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600"
+                                            className="rounded bg-red-500 cursor-pointer px-3 py-1 text-white hover:bg-red-600"
                                             onClick={() => handleDeleteClick(employee.id)}
                                         >
                                             <Trash2 size={16} />

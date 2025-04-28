@@ -108,11 +108,9 @@ export function EmployeeDrawer({
         }} direction="right">
             <DrawerTrigger asChild>
                 <Button
+                    className='cursor-pointer'
                     variant="outline"
-                    onClick={() => {
-                        onClose();
-                        reset();
-                    }}
+                    onClick={() => { onClose(); reset(); }}
                 >
                     {triggerLabel}
                 </Button>
@@ -130,9 +128,7 @@ export function EmployeeDrawer({
                                 </DrawerDescription>
                             </div>
                             <DrawerClose asChild>
-                                <Button size="sm" variant="ghost" onClick={handleClose}>
-                                    ✕
-                                </Button>
+                                <Button size="sm" className='cursor-pointer' variant="ghost" onClick={handleClose}>✕</Button>
                             </DrawerClose>
                         </div>
                     </DrawerHeader>
