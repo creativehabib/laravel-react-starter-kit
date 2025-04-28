@@ -20,6 +20,8 @@ class EmployeeController extends Controller
         $query = Employee::query()->orderBy('created_at', 'desc');
         $employees = $query->paginate(5)->withQueryString();
         return Inertia::render('employees/index', [
+            'departments' => Department::select('id', 'name')->get(),
+            'designations' => Designation::select('id', 'title')->get(),
             'employees' => EmployeeResource::collection($employees),
         ]);
 
