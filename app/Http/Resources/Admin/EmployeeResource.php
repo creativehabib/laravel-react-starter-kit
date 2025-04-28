@@ -33,6 +33,8 @@ class EmployeeResource extends JsonResource
             'status' => $this->status,
             'present_address' => $this->present_address,
             'permanent_address' => $this->permanent_address,
+            'designation_id' => $this->designation_id,
+            'department_id' => $this->department_id,
             'created_at' => (new Carbon)->parse($this->created_at)->diffForHumans(),
         ];
     }
