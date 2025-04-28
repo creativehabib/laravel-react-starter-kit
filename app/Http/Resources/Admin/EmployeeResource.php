@@ -35,7 +35,17 @@ class EmployeeResource extends JsonResource
             'permanent_address' => $this->permanent_address,
             'designation_id' => $this->designation_id,
             'department_id' => $this->department_id,
+            'emergency_contact' => $this->emergency_contact,
+            'blood_group' => $this->blood_group,
+            'date_of_birth' => $this->date_of_birth,
+            'joining_date' => $this->joining_date,
+            'employee_image' => $this->employee_image,
+            'pf_number' => $this->pf_number,
+            'bank_account_number' => $this->bank_account_number,
+            'bank_name' => $this->bank_name,
+            'verify' => $this->verify,
             'created_at' => (new Carbon)->parse($this->created_at)->diffForHumans(),
+            'updated_at' => (new Carbon)->parse($this->updated_at)->diffForHumans(),
         ];
     }
 }

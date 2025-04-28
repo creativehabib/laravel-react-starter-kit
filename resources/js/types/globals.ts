@@ -78,12 +78,38 @@ export interface EmployeeType {
     pf_number: string;
     verify: string;
     about: string;
-    designation_id: number;
-    department_id: number;
-    user_id: number;
+    designation_id: number | string;
+    department_id: number | string;
+    user_id: string;
     created_at: string;
     updated_at: string;
 }
+
+export interface EmployeeFormData {
+    [key: string]: string | number | boolean | File | null | undefined; // ✅ Allow string keys with File and null types
+    id?: number;
+    name: string;
+    email: string;
+    phone: string;
+    position: string;
+    department_id: string | number;
+    designation_id: string | number;
+    user_id?: string | number;
+    pf_number: string;
+    joining_date: string;
+    date_of_birth: string;
+    blood_group: string;
+    emergency_contact: string;
+    employee_image: File | string | null;
+    bank_account_number: string;
+    bank_name: string;
+    verify: string;
+    status: boolean;
+    present_address: string;
+    permanent_address: string;
+    about: string;
+}
+
 
 export interface BloodGroupType {
     id: number;
