@@ -132,7 +132,7 @@ export default function Posts({ posts }: { posts: PostsType }) {
                                                 <TableCell>{index + 1}</TableCell>
                                                 <TableCell>
                                                     <img
-                                                        src={`/storage/${post.image}`}
+                                                        src={`/storage/${post.media?.path}`}
                                                         alt={post.title}
                                                         className="w-14 rounded"
                                                     />

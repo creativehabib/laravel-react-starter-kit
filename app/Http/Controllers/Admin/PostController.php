@@ -7,6 +7,7 @@ use App\Models\Post;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -18,8 +19,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Auth::user()->posts()->latest();
-
+        $query = Post::query()->with(['user','media'])->orderBy('created_at', 'desc');
         if ($request->has('search') && $request->search !== null) {
             $query->whereAny(['title', 'content'], 'like', '%' . $request->search . '%');
         }
@@ -51,11 +51,8 @@ class PostController extends Controller
             'content' => ['required', 'string'],
             'status' => ['required', 'string'],
             'category' => ['required', 'string'],
-            'image' => ['required', 'image', 'max:2048']
         ]);
 
-        $file = $request->file('image');
-        $filePath = $file->store('posts', 'public');
 
         Post::create([
             'user_id' => auth()->user()->id,
@@ -64,7 +61,7 @@ class PostController extends Controller
             'content' => $request->input('content') ,
             'status' => $request->input('status'),
             'category' => $request->input('category'),
-            'image' => $filePath
+            'media_id' => $request->input('media_id'),
         ]);
 
         return to_route('posts.index')->with('success', 'Post created successfully.');
@@ -98,9 +95,6 @@ class PostController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Post $post) {
-        if ($post->image) {
-            Storage::disk('public')->delete($post->image);
-        }
         $post->delete();
 
          return to_route('posts.index')->with('success', 'Post deleted successfully.');

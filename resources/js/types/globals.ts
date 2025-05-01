@@ -32,7 +32,7 @@ export interface PostType {
     content: string;
     category: string;
     status: boolean;
-    image: string;
+    media: MediaItem;
     created_at: string;
     updated_at: string;
 }
@@ -119,6 +119,16 @@ export interface BloodGroupType {
     updated_at: string;
 }
 
+export type MediaItem = {
+    id: number;
+    name: string;
+    filename: string;
+    path: string;
+    mime_type: string;
+    size: number;
+    type: string;
+    created_at: number;
+};
 export interface BloodTypeType {
     id: number;
     name: string;

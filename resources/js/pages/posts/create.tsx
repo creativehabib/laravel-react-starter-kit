@@ -9,6 +9,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
+import SetFeaturedImage from '@/components/media-image-select';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -23,20 +24,22 @@ export default function CreatePost() {
         category: string;
         status: string;
         content: string;
-        image: File | null;
+        media_id: number;
     }>({
         title: '',
         category: '',
         status: '',
         content: '',
-        image: null,
+        media_id: null,
     });
 
     function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         post('/posts');
     }
-
+    const handleImageSelect = (media: MediaItem) => {
+        setData('media_id', media.id );
+    };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create Posts" />
@@ -110,23 +113,8 @@ export default function CreatePost() {
                                     <InputError message={errors.content} />
                                 </div>
 
-                                <div className="mt-4">
-                                    <Label htmlFor="image">Select Image</Label>
-                                    <Input
-                                        type="file"
-                                        id="image"
-                                        onChange={(e) => {
-                                            const file = e.target.files?.[0];
-                                            if (file) {
-                                                setData('image', file);
-                                            }
-                                        }}
-                                        aria-invalid={!!errors.image}
-                                    />
-                                    <InputError message={errors.image} />
-                                    {data.image && (
-                                        <img src={URL.createObjectURL(data.image)} alt="Preview" className="mt-2 w-32 rounded-lg object-cover" />
-                                    )}
+                                <div className='mt-4'>
+                                    <SetFeaturedImage onSelect={handleImageSelect}/>
                                 </div>
 
                                 <div className="mt-4 text-end">
