@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\PostResource;
 use App\Models\Post;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Post::query()->with(['user','media'])->orderBy('created_at', 'desc');
+        $query = Post::query()->orderBy('created_at', 'desc');
         if ($request->has('search') && $request->search !== null) {
             $query->whereAny(['title', 'content'], 'like', '%' . $request->search . '%');
         }
@@ -28,7 +29,7 @@ class PostController extends Controller
         $posts = $query->paginate(4)->withQueryString();
 
         return Inertia::render('posts/index', [
-            'posts' => $posts,
+            'posts' => PostResource::collection($posts),
         ]);
     }
 
@@ -106,7 +107,7 @@ class PostController extends Controller
             $post = Post::findOrFail($id);
             $post->status = !$post->status;
             $post->save();
-            return redirect()->back()->with('success', 'Post status updated successfully.');
+            return redirect()->back()->with('success', $post->status ? 'Post activated.' : 'Post deactivated.');
         } catch (\Exception $e) {
             return Redirect::back()->with('error', 'Failed to update status.');
         }

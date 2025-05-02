@@ -18,7 +18,6 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-//        $departments = Department::orderBy('created_at', 'desc')->with('user')->paginate(5)->withQueryString();
         $query = Department::query()->orderBy('created_at', 'desc');
         $departments = $query->paginate(5)->withQueryString();
         return Inertia::render('departments/index', [

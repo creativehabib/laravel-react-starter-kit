@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useDropzone } from 'react-dropzone';
+import toast from 'react-hot-toast';
 
 interface Props {
     onClose: () => void;
@@ -24,16 +25,35 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
     const [selected, setSelected] = useState<MediaItem | null>(null);
     const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [editName, setEditName] = useState('');
+
 
     useEffect(() => {
-        fetchMedia();
+        fetchMedia(1);
     }, []);
 
-    const fetchMedia = () => {
+    const fetchMedia = (pageNum: number) => {
         setLoading(true);
-        axios.get('/media')
-            .then(res => setMedia(res.data))
+        axios.get(`/media?page=${pageNum}`)
+            .then(res => {
+                const data = res.data;
+                if (pageNum === 1) {
+                    setMedia(data.data);
+                } else {
+                    setMedia(prev => [...prev, ...data.data]);
+                }
+                setHasMore(data.current_page < data.last_page);
+                setPage(data.current_page);
+            })
             .finally(() => setLoading(false));
+    };
+
+    const loadMore = () => {
+        if (hasMore) {
+            fetchMedia(page + 1);
+        }
     };
 
     const onDrop = (acceptedFiles: File[]) => {
@@ -42,8 +62,65 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
         setUploading(true);
 
         axios.post('/media-upload', formData)
-            .then(fetchMedia)
+            .then(() => {
+                toast.success('Image uploaded successfully');
+                fetchMedia(1);
+            })
+            .catch((error) => {
+                console.error('Upload failed:', error);
+                toast.error('Upload failed');
+            })
             .finally(() => setUploading(false));
+    };
+
+
+    // Sync editName with selected item
+    useEffect(() => {
+        setEditName(selected?.name || '');
+    }, [selected]);
+
+    // Save to server onBlur
+    const handleSaveName = () => {
+        if (!selected || editName === selected.name) return;
+
+        axios.put(`/media/${selected.id}`, { name: editName })
+            .then(() => {
+                setSelected({ ...selected, name: editName });
+                toast.success('Name updated');
+            })
+            .catch((error) => {
+                console.error('Update failed:', error);
+                toast.error('Failed to update name');
+                setEditName(selected.name); // revert to the previous name
+            });
+    };
+
+
+    const handleCopy = (text: string) => {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => {
+                toast.success('Copied to clipboard');
+            }).catch((err) => {
+                console.error('Copy failed:', err);
+                toast.error('Failed to copy');
+            });
+        } else {
+            // Fallback for older browsers
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                toast.success('Copied to clipboard');
+            } catch (err) {
+                console.error('Fallback copy failed:', err);
+                toast.error('Copy not supported');
+            }
+            document.body.removeChild(textarea);
+        }
     };
 
     const { getRootProps, getInputProps } = useDropzone({ onDrop });
@@ -58,12 +135,11 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                 <div className="px-6 overflow-y-auto flex-1">
                     <Tabs defaultValue="upload" className="w-full">
                         <TabsList className="mb-4">
-                            <TabsTrigger value="upload" className="cursor-pointer">Upload files</TabsTrigger>
-                            <TabsTrigger value="library" className="cursor-pointer">Media Library</TabsTrigger>
-                            <TabsTrigger value="optimole" className="cursor-pointer">Optimole</TabsTrigger>
+                            <TabsTrigger value="upload">Upload files</TabsTrigger>
+                            <TabsTrigger value="library">Media Library</TabsTrigger>
+                            <TabsTrigger value="optimole">Optimole</TabsTrigger>
                         </TabsList>
 
-                        {/* Upload Tab */}
                         <TabsContent value="upload">
                             <div
                                 {...getRootProps()}
@@ -80,33 +156,40 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                             </div>
                         </TabsContent>
 
-                        {/* Media Library Tab */}
                         <TabsContent value="library">
-                            {loading ? (
+                            {loading && media.length === 0 ? (
                                 <div className="flex justify-center items-center h-64">
                                     <Loader2 className="animate-spin h-6 w-6 text-gray-500" />
                                 </div>
                             ) : (
                                 <div className="flex gap-4">
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[24rem] overflow-y-auto flex-1">
-                                        {media.map((img) => (
-                                            <div
-                                                key={img.id}
-                                                className={`rounded border-2 overflow-hidden cursor-pointer ${
-                                                    selected?.id === img.id ? 'border-blue-500' : 'border-transparent'
-                                                }`}
-                                                onClick={() => setSelected(img)}
-                                            >
-                                                <img
-                                                    src={`/storage/${img.path}`}
-                                                    alt={img.name}
-                                                    className="w-full h-32 object-cover"
-                                                />
+                                    <div className="flex-1 overflow-y-auto max-h-[30rem]">
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                            {media.map((img) => (
+                                                <div
+                                                    key={img.id}
+                                                    className={`rounded border-2 overflow-hidden cursor-pointer ${
+                                                        selected?.id === img.id ? 'border-blue-500' : 'border-transparent'
+                                                    }`}
+                                                    onClick={() => setSelected(img)}
+                                                >
+                                                    <img
+                                                        src={`/storage/${img.path}`}
+                                                        alt={img.name}
+                                                        className="w-full h-32 object-cover"
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                        {hasMore && (
+                                            <div className="text-center mt-4">
+                                                <Button onClick={loadMore} disabled={loading}>
+                                                    {loading ? <Loader2 className="animate-spin mr-2" /> : 'Load More'}
+                                                </Button>
                                             </div>
-                                        ))}
+                                        )}
                                     </div>
 
-                                    {/* Selected Image Preview */}
                                     {selected && (
                                         <div className="w-64 border rounded p-4 bg-gray-50 dark:bg-gray-900">
                                             <img
@@ -114,19 +197,56 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                                 alt={selected.name}
                                                 className="w-full h-40 object-cover rounded mb-4"
                                             />
+
                                             <div>
                                                 <p className="font-semibold">Name:</p>
-                                                <p className="mb-2 break-words">{selected.name}</p>
+                                                <input
+                                                    type="text"
+                                                    className="mb-2 border rounded px-2 py-1 w-full"
+                                                    value={editName}
+                                                    onChange={(e) => setEditName(e.target.value)}
+                                                    onBlur={handleSaveName}
+                                                />
+
 
                                                 <p className="font-semibold">Size:</p>
                                                 <p className="mb-2">{(selected.size / 1024).toFixed(2)} KB</p>
 
                                                 <p className="font-semibold">Type:</p>
                                                 <p className="mb-2">{selected.mime_type}</p>
-                                                <p><strong>Uploaded:</strong> {new Date(selected.created_at).toLocaleString()}</p>
-                                                <p className="break-words text-sm mt-2 text-gray-600">
-                                                    <strong>Path:</strong> {selected.path}
+                                                <p><strong>Uploaded:</strong></p>
+                                                <p>
+                                                    {
+                                                        new Date(selected.created_at).toLocaleString('en-US', {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric',
+                                                            hour: 'numeric',
+                                                            minute: '2-digit',
+                                                            hour12: true,
+                                                        })
+                                                    }
                                                 </p>
+
+                                                {/* Full URL Copy */}
+                                                <div className="mt-4">
+                                                    <p className="font-semibold">Full URL:</p>
+                                                    <div className="flex items-center space-x-2 overflow-hidden">
+                                                        <input
+                                                            type="text"
+                                                            readOnly
+                                                            value={`${window.location.origin}/storage/${selected.path}`}
+                                                            className="flex-1 border rounded px-2 py-1 text-sm truncate min-w-0"
+                                                        />
+
+                                                        <button
+                                                            onClick={() => handleCopy(`${window.location.origin}/storage/${selected.path}`)}
+                                                            className="text-xs px-2 py-1 cursor-pointer bg-blue-600 text-white rounded"
+                                                        >
+                                                            Copy
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     )}
@@ -134,7 +254,6 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                             )}
                         </TabsContent>
 
-                        {/* Optimole Placeholder */}
                         <TabsContent value="optimole">
                             <div className="text-center py-10 text-muted-foreground">Optimole integration coming soon...</div>
                         </TabsContent>

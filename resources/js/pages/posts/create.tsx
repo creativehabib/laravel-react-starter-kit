@@ -10,6 +10,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 import SetFeaturedImage from '@/components/media-image-select';
+import { MediaItem } from '@/types/globals';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -24,21 +25,23 @@ export default function CreatePost() {
         category: string;
         status: string;
         content: string;
-        media_id: number;
+        media_id: number | null;
     }>({
         title: '',
         category: '',
         status: '',
         content: '',
-        media_id: null,
+        media_id: null as number | null,
     });
 
     function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         post('/posts');
     }
-    const handleImageSelect = (media: MediaItem) => {
-        setData('media_id', media.id );
+    const handleImageSelect = (media: Partial<MediaItem>) => {
+        if (media.id !== undefined) {
+            setData('media_id', media.id);
+        }
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

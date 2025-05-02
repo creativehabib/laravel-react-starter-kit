@@ -13,7 +13,7 @@ class MediaController extends Controller
 {
     public function index()
     {
-        return Media::latest()->get();
+        return Media::latest()->paginate(8)->withQueryString();
     }
 
     public function store(Request $request)
@@ -52,4 +52,18 @@ class MediaController extends Controller
 
         return response()->json($media);
     }
+
+    public function update(Request $request, $id)
+    {
+        $media = Media::findOrFail($id);
+        $request->validate([
+            'name' => 'string|max:255',
+        ]);
+
+        $media->update($request->only(['name']));
+
+        return response()->json(['message' => 'Media updated successfully']);
+    }
+
+
 }

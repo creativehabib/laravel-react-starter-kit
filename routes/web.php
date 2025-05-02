@@ -23,3 +23,4 @@ Route::get('/media', [MediaController::class, 'index']);
 Route::post('/media', [MediaController::class, 'store']);
 
 Route::post('/media-upload', [MediaController::class, 'upload']);
+Route::put('/media/{id}', [MediaController::class, 'update']);

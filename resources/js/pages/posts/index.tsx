@@ -11,8 +11,9 @@ import { Edit, Search, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import DeleteDialog from '@/components/delete-dialog';
-import { LinksType, PostType } from '@/types/globals';
+import { LinksType, MetaType, PostType } from '@/types/globals';
 import { Switch } from "@/components/ui/switch"
+import Toggle from '@/components/toggle';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -24,6 +25,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface PostsType {
     data: PostType[];
+    meta: MetaType;
     links: LinksType[];
     current_page: number;
     last_page: number;
@@ -132,7 +134,7 @@ export default function Posts({ posts }: { posts: PostsType }) {
                                                 <TableCell>{index + 1}</TableCell>
                                                 <TableCell>
                                                     <img
-                                                        src={`/storage/${post.media?.path}`}
+                                                        src={`/storage/${post.media?.path || ''}`}
                                                         alt={post.title}
                                                         className="w-14 rounded"
                                                     />
@@ -142,11 +144,7 @@ export default function Posts({ posts }: { posts: PostsType }) {
                                                 <TableCell>{post.category}</TableCell>
 
                                                 <TableCell>
-                                                    <Switch
-                                                        className="cursor-pointer"
-                                                        checked={post.status}
-                                                        onCheckedChange={() => handleStatusToggle(post.id)}
-                                                    />
+                                                    <Toggle initial={post.status}  onChange={() => handleStatusToggle(post.id)}/>
                                                 </TableCell>
                                                 <TableCell className="space-x-1">
                                                     <Button asChild size={'sm'}>
@@ -165,7 +163,7 @@ export default function Posts({ posts }: { posts: PostsType }) {
                                 </Table>
                             </CardContent>
                         </Card>
-                        <InertiaPagination meta={posts} />
+                        <InertiaPagination meta={posts.meta} />
                     </div>
                 </div>
             </AppLayout>
