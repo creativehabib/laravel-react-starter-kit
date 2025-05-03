@@ -118,7 +118,7 @@ export default function Index() {
                                         <td className='border px-2 py-1 text-center'>
                                             <img
                                                 src={getImageUrl(employee.media?.path, 400, 300, employee.media?.name || 'No Image')}
-                                                alt={employee.media.name}
+                                                alt={employee.media?.name}
                                                 className="h-10 w-10 rounded-full"
                                             />
                                         </td>
