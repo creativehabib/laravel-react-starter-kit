@@ -12,7 +12,6 @@ import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import DeleteDialog from '@/components/delete-dialog';
 import { LinksType, MetaType, PostType } from '@/types/globals';
-import { Switch } from "@/components/ui/switch"
 import Toggle from '@/components/toggle';
 import { getImageUrl } from '@/helper/employee';
 

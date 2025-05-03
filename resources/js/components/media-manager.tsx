@@ -14,6 +14,7 @@ import { Loader2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useDropzone } from 'react-dropzone';
 import toast from 'react-hot-toast';
+import DeleteDialog from '@/components/delete-dialog';
 
 interface Props {
     onClose: () => void;
@@ -29,6 +30,10 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
     const [hasMore, setHasMore] = useState(true);
     const [editName, setEditName] = useState('');
     const featuredCount = media.length ? media.filter((img) => img.filename).length : 0;
+
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+    const [deletingImage, setDeletingImage] = useState<MediaItem | null>(null);
+
 
     useEffect(() => {
         fetchMedia(1);
@@ -155,21 +160,27 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
     };
 
 
+    const handleDelete = () => {
+        if (!deletingImage) return;
 
-    const handleDelete = (id: number) => {
-       axios.delete(`/media/${id}`)
+        axios
+            .delete(`/media/${deletingImage.id}`)
             .then(() => {
-                toast.success('Image deleted');
-                setSelected(null); // Clear selection
-                // Optionally refresh media list here
-                setMedia((prev) => prev.filter((img) => img.id !== id));
+                setMedia((prev) => prev.filter((img) => img.id !== deletingImage.id));
+                if (selected?.id === deletingImage.id) setSelected(null);
+                toast.success("Image deleted");
             })
-            .catch(() => toast.error('Failed to delete image'));
+            .catch(() => toast.error("Failed to delete image"))
+            .finally(() => {
+                setOpenDeleteDialog(false);
+                setDeletingImage(null);
+            });
     };
 
     const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
     return (
+        <>
         <Dialog open onOpenChange={onClose}>
             <DialogContent className="!w-[90vw] !max-w-[90vw] max-h-[90vh] p-0 flex flex-col">
                 <DialogHeader className="p-4 border-b">
@@ -256,12 +267,17 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                                     />
                                                 </label>
 
-                                                <button
-                                                    onClick={() => handleDelete(selected.id)}
+                                                <Button
+                                                    variant="destructive"
                                                     className="px-2 py-1 cursor-pointer bg-red-600 text-xs text-white rounded hover:bg-red-700"
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setDeletingImage(selected);
+                                                        setOpenDeleteDialog(true);
+                                                    }}
                                                 >
                                                     Delete
-                                                </button>
+                                                </Button>
                                             </div>
                                             <div>
                                                 <p className="font-semibold">Name:</p>
@@ -338,6 +354,14 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                 </DialogFooter>
             </DialogContent>
         </Dialog>
+        <DeleteDialog
+            open={openDeleteDialog}
+            onClose={() => setOpenDeleteDialog(false)}
+            onConfirm={handleDelete}
+            title="Delete Image"
+            description="This will permanently remove the image from the system."
+        />
+    </>
     );
 };
 
