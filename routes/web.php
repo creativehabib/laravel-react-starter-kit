@@ -24,3 +24,6 @@ Route::post('/media', [MediaController::class, 'store']);
 
 Route::post('/media-upload', [MediaController::class, 'upload']);
 Route::put('/media/{id}', [MediaController::class, 'update']);
+Route::delete('/media/{id}', [MediaController::class, 'destroy']);
+Route::post('/media/{id}/update-image', [MediaController::class, 'updateImage']);
+

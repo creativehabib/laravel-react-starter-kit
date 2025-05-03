@@ -65,5 +65,52 @@ class MediaController extends Controller
         return response()->json(['message' => 'Media updated successfully']);
     }
 
+    public function destroy($id)
+    {
+        $media = Media::findOrFail($id);
+
+        // ✅ Delete file from the public disk
+        if (Storage::disk('public')->exists($media->path)) {
+            Storage::disk('public')->delete($media->path);
+        }
+
+        $media->delete();
+
+        return response()->json(['success' => 'Media deleted successfully']);
+    }
+
+    public function updateImage(Request $request, $id)
+    {
+        $media = Media::findOrFail($id);
+        $request->validate(['image' => 'required|image']);
+
+        // Delete the old file
+        if (Storage::disk('public')->exists($media->path)) {
+            Storage::disk('public')->delete($media->path);
+        }
+
+        // Store the new file
+        $file = $request->file('image');
+        $path = $file->store('uploads', 'public');
+
+        // Update media record
+        $media->update([
+            'name' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
+            'filename' => $file->getClientOriginalName(),
+            'mime_type' => $file->getClientMimeType(),
+            'path' => $path,
+            'updated_at' => now(),
+            'size' => $file->getSize(),
+            'created_by' => Auth::id() ?? 1,
+        ]);
+
+        return response()->json([
+            'path' => $media->path,
+            'updated_at' => $media->updated_at,
+            'message' => 'Media image updated successfully'
+        ]);
+    }
+
+
 
 }

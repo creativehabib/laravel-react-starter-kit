@@ -86,6 +86,9 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
         axios.put(`/media/${selected.id}`, { name: editName })
             .then(() => {
                 setSelected({ ...selected, name: editName });
+                setMedia((prev) =>
+                    prev.map((img) => (img.id === selected.id ? { ...img, name: editName } : img))
+                );
                 toast.success('Name updated');
             })
             .catch((error) => {
@@ -123,12 +126,53 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
         }
     };
 
+    const handleImageChange = (file: string | Blob) => {
+        if (!file || !selected) return;
+
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('old_path', selected.path);
+
+        axios.post(`/media/${selected.id}/update-image`, formData)
+            .then((res) => {
+                toast.success('Image updated');
+
+                const updated = {
+                    ...selected,
+                    path: res.data.path,
+                    updated_at: res.data.updated_at, // ✅ include this
+                };
+
+                setMedia((prev) =>
+                    prev.map((img) =>
+                        img.id === selected.id ? updated : img
+                    )
+                );
+
+                setSelected(updated);
+            })
+            .catch(() => toast.error('Failed to update image'));
+    };
+
+
+
+    const handleDelete = (id: number) => {
+        axios.delete(`/media/${id}`)
+            .then(() => {
+                toast.success('Image deleted');
+                setSelected(null); // Clear selection
+                // Optionally refresh media list here
+                setMedia((prev) => prev.filter((img) => img.id !== id));
+            })
+            .catch(() => toast.error('Failed to delete image'));
+    };
+
     const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
     return (
         <Dialog open onOpenChange={onClose}>
             <DialogContent className="!w-[90vw] !max-w-[90vw] max-h-[90vh] p-0 flex flex-col">
-                <DialogHeader className="p-6">
+                <DialogHeader className="p-4 border-b">
                     <DialogTitle>Feature Image</DialogTitle>
                 </DialogHeader>
 
@@ -174,7 +218,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                                     onClick={() => setSelected(img)}
                                                 >
                                                     <img
-                                                        src={`/storage/${img.path}`}
+                                                        src={`/storage/${img.path}?t=${img.updated_at || Date.now()}`}
                                                         alt={img.name}
                                                         className="w-full h-32 object-cover"
                                                     />
@@ -195,9 +239,30 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                             <img
                                                 src={`/storage/${selected.path}`}
                                                 alt={selected.name}
-                                                className="w-full h-40 object-cover rounded mb-4"
+                                                className="w-full h-40 object-cover rounded"
                                             />
+                                            {/* Edit & Delete Buttons */}
+                                            <div className="flex justify-end mt-1 space-x-1">
+                                                <label className="inline-flex items-center px-2 py-1 bg-blue-600 text-white text-xs rounded cursor-pointer hover:bg-blue-700">
+                                                    Change
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        className="hidden"
+                                                        onChange={(e) => {
+                                                            const file = e.target.files?.[0];
+                                                            if (file) handleImageChange(file);
+                                                        }}
+                                                    />
+                                                </label>
 
+                                                <button
+                                                    onClick={() => handleDelete(selected.id)}
+                                                    className="px-2 py-1 cursor-pointer bg-red-600 text-xs text-white rounded hover:bg-red-700"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
                                             <div>
                                                 <p className="font-semibold">Name:</p>
                                                 <input
