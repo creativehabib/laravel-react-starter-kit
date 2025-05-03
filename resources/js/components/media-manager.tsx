@@ -28,7 +28,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [editName, setEditName] = useState('');
-
+    const featuredCount = media.length ? media.filter((img) => img.filename).length : 0;
 
     useEffect(() => {
         fetchMedia(1);
@@ -157,7 +157,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
 
 
     const handleDelete = (id: number) => {
-        axios.delete(`/media/${id}`)
+       axios.delete(`/media/${id}`)
             .then(() => {
                 toast.success('Image deleted');
                 setSelected(null); // Clear selection
@@ -173,7 +173,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
         <Dialog open onOpenChange={onClose}>
             <DialogContent className="!w-[90vw] !max-w-[90vw] max-h-[90vh] p-0 flex flex-col">
                 <DialogHeader className="p-4 border-b">
-                    <DialogTitle>Feature Image</DialogTitle>
+                    <DialogTitle>Total Feature Images: ({featuredCount})</DialogTitle>
                 </DialogHeader>
 
                 <div className="px-6 overflow-y-auto flex-1">
@@ -208,7 +208,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                             ) : (
                                 <div className="flex gap-4">
                                     <div className="flex-1 overflow-y-auto max-h-[30rem]">
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                                             {media.map((img) => (
                                                 <div
                                                     key={img.id}
