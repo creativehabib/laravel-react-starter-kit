@@ -4,7 +4,7 @@ import { BreadcrumbItem } from '@/types';
 import { DialogDemo } from '@/pages/designations/designation-form';
 import { Edit, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DesignationType, FlashProps, LinksType, MetaType } from '@/types/globals';
 import DeleteDialog from '@/components/delete-dialog';
 import InertiaPagination from '@/components/inertia-pagination';
@@ -93,37 +93,45 @@ export default function Index() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {designations.data?.map((designation, index) => (
-                                    <tr key={designation.id}>
-                                        <td className="border px-2 py-1 text-center">{designations.meta.from + index}</td>
-                                        <td className="border px-2 py-1">{designation.title}</td>
-                                        <td className="w-fit border px-2 py-1 text-center">
-                                            <div className="flex justify-center items-center">
-                                                <Toggle
-                                                    initial={designation.status}
-                                                    onChange={() => handleStatusToggle(designation.id)}
-                                                />
-                                            </div>
-                                        </td>
-                                        <td className="border px-2 py-1 text-center">
-                                            {designation.created_at}
-                                        </td>
-                                        <td className="space-x-1 border px-2 py-1 text-center">
-                                            <button
-                                                className="cursor-pointer rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600"
-                                                onClick={() => handleEdit(designation)}
-                                            >
-                                                <Edit size={16} />
-                                            </button>
-                                            <button
-                                                className="cursor-pointer rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600"
-                                                onClick={() => handleDeleteClick(designation.id)}
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
+                                {designations.data.length > 0 ? (
+                                    designations.data.map((designation, index) => (
+                                        <tr key={designation.id}>
+                                            <td className="border px-2 py-1 text-center">{designations.meta.from + index}</td>
+                                            <td className="border px-2 py-1">{designation.title}</td>
+                                            <td className="w-fit border px-2 py-1 text-center">
+                                                <div className="flex justify-center items-center">
+                                                    <Toggle
+                                                        initial={designation.status}
+                                                        onChange={() => handleStatusToggle(designation.id)}
+                                                    />
+                                                </div>
+                                            </td>
+                                            <td className="border px-2 py-1 text-center">
+                                                {designation.created_at}
+                                            </td>
+                                            <td className="space-x-1 border px-2 py-1 text-center">
+                                                <button
+                                                    className="cursor-pointer rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600"
+                                                    onClick={() => handleEdit(designation)}
+                                                >
+                                                    <Edit size={16} />
+                                                </button>
+                                                <button
+                                                    className="cursor-pointer rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600"
+                                                    onClick={() => handleDeleteClick(designation.id)}
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={5} className="border px-2 py-4 text-center">
+                                            No designation found.
                                         </td>
                                     </tr>
-                                ))}
+                                )}
                             </tbody>
                         </table>
                         {/* <Pagination links={designations.links} /> */}

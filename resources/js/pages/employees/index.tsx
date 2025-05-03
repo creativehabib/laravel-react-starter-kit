@@ -2,7 +2,7 @@ import { Head, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { DepartmentType, DesignationType, EmployeeType, FlashProps, LinksType, MetaType } from '@/types/globals';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Edit, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -99,41 +99,48 @@ export default function Index() {
                             </tr>
                             </thead>
                             <tbody>
-                            {/*<pre>{JSON.stringify(employees, undefined,2)}</pre>*/}
-                            {employees.data.map((employee, index) => (
-                                <tr key={employee.id}>
-                                    <td className="border px-2 py-1 text-center">{employees.meta.from + index}</td>
-                                    <td className="border px-2 py-1">{employee.name}</td>
-                                    <td className="border px-2 py-1">{employee.department?.name ?? '—'}</td>
-                                    <td className='border px-2 py-1'>
-                                        {employee.designation?.title ?? '—'}</td>
-                                    <td className="border px-2 py-1 text-center">
-                                        <div className="flex justify-center items-center">
-                                            <Toggle
-                                                initial={employee.status}
-                                                onChange={() => handleStatusToggle(employee.id)}
-                                            />
-                                        </div>
-                                    </td>
-                                    <td className="border px-2 py-1 text-center">
-                                        {employee.created_at}
-                                    </td>
-                                    <td className="border px-2 py-1 text-center space-x-1">
-                                        <button
-                                            className="rounded bg-blue-500 cursor-pointer px-3 py-1 text-white hover:bg-blue-600"
-                                            onClick={() => handleEdit(employee)}
-                                        >
-                                            <Edit size={16} />
-                                        </button>
-                                        <button
-                                            className="rounded bg-red-500 cursor-pointer px-3 py-1 text-white hover:bg-red-600"
-                                            onClick={() => handleDeleteClick(employee.id)}
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
+                            {employees.data.length > 0 ? (
+                                employees.data.map((employee, index) => (
+                                    <tr key={employee.id}>
+                                        <td className="border px-2 py-1 text-center">{employees.meta.from + index}</td>
+                                        <td className="border px-2 py-1">{employee.name}</td>
+                                        <td className="border px-2 py-1">{employee.department?.name ?? '—'}</td>
+                                        <td className='border px-2 py-1'>
+                                            {employee.designation?.title ?? '—'}</td>
+                                        <td className="border px-2 py-1 text-center">
+                                            <div className="flex justify-center items-center">
+                                                <Toggle
+                                                    initial={employee.status}
+                                                    onChange={() => handleStatusToggle(employee.id)}
+                                                />
+                                            </div>
+                                        </td>
+                                        <td className="border px-2 py-1 text-center">
+                                            {employee.created_at}
+                                        </td>
+                                        <td className="border px-2 py-1 text-center space-x-1">
+                                            <button
+                                                className="rounded bg-blue-500 cursor-pointer px-3 py-1 text-white hover:bg-blue-600"
+                                                onClick={() => handleEdit(employee)}
+                                            >
+                                                <Edit size={16} />
+                                            </button>
+                                            <button
+                                                className="rounded bg-red-500 cursor-pointer px-3 py-1 text-white hover:bg-red-600"
+                                                onClick={() => handleDeleteClick(employee.id)}
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={7} className="border px-2 py-4 text-center">
+                                        No employee found.
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                             </tbody>
                         </table>
 

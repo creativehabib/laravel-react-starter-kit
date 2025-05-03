@@ -106,6 +106,7 @@ class MediaController extends Controller
 
         return response()->json([
             'path' => $media->path,
+            'name' => $media->name,
             'updated_at' => $media->updated_at,
             'message' => 'Media image updated successfully'
         ]);

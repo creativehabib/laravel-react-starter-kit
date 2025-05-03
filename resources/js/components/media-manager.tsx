@@ -208,7 +208,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                             ) : (
                                 <div className="flex gap-4">
                                     <div className="flex-1 overflow-y-auto max-h-[30rem]">
-                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                             {media.map((img) => (
                                                 <div
                                                     key={img.id}
@@ -219,7 +219,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                                 >
                                                     <img
                                                         src={`/storage/${img.path}?t=${img.updated_at || Date.now()}`}
-                                                        alt={img.name}
+                                                        alt={img.name || 'Image'}
                                                         className="w-full h-32 object-cover"
                                                     />
                                                 </div>

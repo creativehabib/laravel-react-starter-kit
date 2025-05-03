@@ -25,3 +25,10 @@ export function transformEmployeeToFormData(employee: EmployeeType): EmployeeFor
         about: employee.about ?? '',
     };
 }
+export function getImageUrl(path?: string | null, width = 300, height = 200, text = 'No Image') {
+    if (!path) {
+        return `https://placehold.co/${width}x${height}?text=${encodeURIComponent(text)}`;
+    }
+
+    return `/storage/${path}`;
+}

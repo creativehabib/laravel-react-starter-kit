@@ -29,7 +29,7 @@ const SetFeaturedImage: React.FC<Props> = ({ onSelect, initial }) => {
             <button
                 type="button"
                 onClick={() => setModalOpen(true)}
-                className="bg-blue-600 text-white cursor-pointer px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 active:bg-blue-800 transition duration-200"
+                className="bg-blue-600 text-white cursor-pointer px-2 py-1 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 active:bg-blue-800 transition duration-200"
             >
                 Set Featured Image
             </button>

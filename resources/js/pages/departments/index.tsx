@@ -4,7 +4,7 @@ import { BreadcrumbItem } from '@/types';
 import { DialogDemo } from '@/pages/departments/department-form';
 import { Edit, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DepartmentType, FlashProps, LinksType, MetaType } from '@/types/globals';
 import DeleteDialog from '@/components/delete-dialog';
 import InertiaPagination from '@/components/inertia-pagination';
@@ -92,41 +92,49 @@ export default function Index() {
                             </tr>
                             </thead>
                             <tbody>
-                            {departments.data?.map((department, index) => (
-                                <tr key={department.id}>
-                                    <td className="border px-2 py-1 text-center">{departments.meta.from + index}</td>
-                                    <td className="border px-2 py-1">{department.name}</td>
-                                    <td className="border px-2 py-1">{department.user.name}</td>
-                                    <td className="border px-2 py-1 text-center">
-                                        <div className="flex justify-center items-center">
-                                            <Toggle
-                                                initial={department.status}
-                                                onChange={() => handleStatusToggle(department.id)}
-                                            />
-                                        </div>
-                                    </td>
-                                    <td className="border px-2 py-1 text-center">
-                                        {department.created_at}
-                                    </td>
-                                    <td className="space-x-1 border px-2 py-1 text-center">
-                                        <button
-                                            className="rounded bg-blue-500 cursor-pointer px-3 py-1 text-white hover:bg-blue-600"
-                                            onClick={() => handleEdit(department)}
-                                        >
-                                            <Edit size={16} />
-                                        </button>
-                                        <button
-                                            className="bg-red-500 text-white px-3 py-1 rounded cursor-pointer hover:bg-red-600"
-                                            onClick={() => handleDeleteClick(department.id)}
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
+                                {departments.data.length > 0 ? (
+                                    departments.data?.map((department, index) => (
+                                        <tr key={department.id}>
+                                            <td className="border px-2 py-1 text-center">{departments.meta.from + index}</td>
+                                            <td className="border px-2 py-1">{department.name}</td>
+                                            <td className="border px-2 py-1">{department.user.name}</td>
+                                            <td className="border px-2 py-1 text-center">
+                                                <div className="flex justify-center items-center">
+                                                    <Toggle
+                                                        initial={department.status}
+                                                        onChange={() => handleStatusToggle(department.id)}
+                                                    />
+                                                </div>
+                                            </td>
+                                            <td className="border px-2 py-1 text-center">
+                                                {department.created_at}
+                                            </td>
+                                            <td className="space-x-1 border px-2 py-1 text-center">
+                                                <button
+                                                    className="rounded bg-blue-500 cursor-pointer px-3 py-1 text-white hover:bg-blue-600"
+                                                    onClick={() => handleEdit(department)}
+                                                >
+                                                    <Edit size={16} />
+                                                </button>
+                                                <button
+                                                    className="bg-red-500 text-white px-3 py-1 rounded cursor-pointer hover:bg-red-600"
+                                                    onClick={() => handleDeleteClick(department.id)}
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6} className="border px-2 py-4 text-center">
+                                            No department found.
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
-                        {/* <Pagination links={departments.links} /> */}
+                        {/* Pagination */}
                         <div className='mb-2'>
                             <InertiaPagination meta={departments.meta} />
                         </div>

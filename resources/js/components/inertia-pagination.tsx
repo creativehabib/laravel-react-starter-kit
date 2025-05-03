@@ -3,20 +3,24 @@ import { Button } from './ui/button';
 import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { MetaType } from '@/types/globals';
 
-
 interface Props {
     meta: MetaType;
-    range?: number; // number of pages to show before/after current
+    range?: number; // number of pages to show before/after the current
 }
 
 export default function InertiaPagination({ meta, range = 2 }: Props) {
     const { current_page, last_page, from, to, total, links } = meta;
+
+    // ⛔ Don't render pagination if no items or only one page
+    if (!total || last_page <= 1) return null;
+
     const prevLink = links.find((l) => l.label.toLowerCase().includes('previous'));
     const nextLink = links.find((l) => l.label.toLowerCase().includes('next'));
+
     const createPagination = () => {
         const pages: (number | string)[] = [];
 
-        // Always show first page
+        // First page logic
         if (current_page > range + 2) {
             pages.push(1, '...');
         } else {
@@ -25,12 +29,12 @@ export default function InertiaPagination({ meta, range = 2 }: Props) {
             }
         }
 
-        // Current page +/- range
+        // Middle pages
         for (let i = current_page - range; i <= current_page + range; i++) {
             if (i > 1 && i < last_page) pages.push(i);
         }
 
-        // Show last page
+        // Last page logic
         if (current_page < last_page - range - 1) {
             pages.push('...', last_page);
         } else {
@@ -39,7 +43,6 @@ export default function InertiaPagination({ meta, range = 2 }: Props) {
             }
         }
 
-        // Remove duplicates
         return [...new Set([1, ...pages, last_page])];
     };
 
@@ -67,6 +70,7 @@ export default function InertiaPagination({ meta, range = 2 }: Props) {
                     )}
                 </Button>
 
+                {/* Page Buttons */}
                 {paginationItems.map((item, index) => {
                     if (typeof item === 'string') {
                         return (
@@ -96,14 +100,6 @@ export default function InertiaPagination({ meta, range = 2 }: Props) {
                 })}
 
                 {/* Next Button */}
-                {/*{links[links.length - 1] && links[links.length - 1].url && (*/}
-                {/*    <Button asChild variant="outline">*/}
-                {/*        <Link href={links[links.length - 1].url} preserveScroll preserveState>*/}
-                {/*            Next*/}
-                {/*        </Link>*/}
-                {/*    </Button>*/}
-                {/*)}*/}
-
                 <Button
                     variant="outline"
                     disabled={!nextLink?.url}

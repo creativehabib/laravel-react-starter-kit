@@ -14,6 +14,7 @@ import DeleteDialog from '@/components/delete-dialog';
 import { LinksType, MetaType, PostType } from '@/types/globals';
 import { Switch } from "@/components/ui/switch"
 import Toggle from '@/components/toggle';
+import { getImageUrl } from '@/helper/employee';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -129,36 +130,45 @@ export default function Posts({ posts }: { posts: PostsType }) {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {posts.data?.map((post, index) => (
-                                            <TableRow key={post.id}>
-                                                <TableCell>{index + 1}</TableCell>
-                                                <TableCell>
-                                                    <img
-                                                        src={`/storage/${post.media?.path || ''}`}
-                                                        alt={post.title}
-                                                        className="w-14 rounded"
-                                                    />
-                                                </TableCell>
-                                                <TableCell>{post.title}</TableCell>
-                                                <TableCell>{post.content.substring(0, 50)}</TableCell>
-                                                <TableCell>{post.category}</TableCell>
+                                        {posts.data.length > 0 ? (
+                                            posts.data?.map((post, index) => (
+                                                <TableRow key={post.id}>
+                                                    <TableCell>{index + 1}</TableCell>
+                                                    <TableCell>
+                                                        <img
+                                                            src={getImageUrl(post.media?.path, 400, 300, post.media?.name || 'No Image')}
+                                                            alt={post.title}
+                                                            className="w-14 rounded"
+                                                        />
 
-                                                <TableCell>
-                                                    <Toggle initial={post.status}  onChange={() => handleStatusToggle(post.id)}/>
-                                                </TableCell>
-                                                <TableCell className="space-x-1">
-                                                    <Button asChild size={'sm'}>
-                                                        <Link href={`/posts/${post.id}/edit`} prefetch>
-                                                            <Edit size={16} />
-                                                        </Link>
-                                                    </Button>
+                                                    </TableCell>
+                                                    <TableCell>{post.title}</TableCell>
+                                                    <TableCell>{post.content.substring(0, 50)}</TableCell>
+                                                    <TableCell>{post.category}</TableCell>
 
-                                                    <Button size={'sm'} className='bg-red-500 hover:bg-red-400 cursor-pointer' onClick={() => handleDeleteClick(post.id)}>
-                                                        <Trash2 size={16} />
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
+                                                    <TableCell>
+                                                        <Toggle initial={post.status}  onChange={() => handleStatusToggle(post.id)}/>
+                                                    </TableCell>
+                                                    <TableCell className="space-x-1">
+                                                        <Button asChild size={'sm'}>
+                                                            <Link href={`/posts/${post.id}/edit`} prefetch>
+                                                                <Edit size={16} />
+                                                            </Link>
+                                                        </Button>
+
+                                                        <Button size={'sm'} className='bg-red-500 hover:bg-red-400 cursor-pointer' onClick={() => handleDeleteClick(post.id)}>
+                                                            <Trash2 size={16} />
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan={7} className="text-center py-4">
+                                                    No posts found.
+                                                </td>
+                                            </tr>
+                                        )}
                                     </TableBody>
                                 </Table>
                             </CardContent>
