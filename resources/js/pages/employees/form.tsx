@@ -15,14 +15,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import InputError from "@/components/input-error";
-import { DepartmentType, DesignationType, EmployeeFormData, EmployeeType } from '@/types/globals';
+import { DepartmentType, DesignationType, EmployeeFormData, EmployeeType, MediaItem } from '@/types/globals';
 import Toggle from '@/components/toggle';
 import { transformEmployeeToFormData } from '@/helper/employee';
+import SetFeaturedImage from '@/components/media-image-select';
 
 interface EmployeeDrawerProps {
     employee?: EmployeeType | null;
     departments: DepartmentType[];
     designations: DesignationType[];
+    media: MediaItem[];
     triggerLabel?: string;
     onClose: () => void;
 }
@@ -44,6 +46,7 @@ const initialFormData: EmployeeFormData = {
     bank_account_number: "",
     bank_name: "",
     verify: "",
+    media_id: '',
     status: true,
     present_address: "",
     permanent_address: "",
@@ -54,6 +57,7 @@ export function EmployeeDrawer({
        employee = null,
        departments = [],
        designations = [],
+       media = [],
        triggerLabel,
        onClose,
    }: EmployeeDrawerProps) {
@@ -83,7 +87,6 @@ export function EmployeeDrawer({
 
     React.useEffect(() => {
         if (employee) {
-            setOpen(true);
             setOpen(true);
             setData(transformEmployeeToFormData(employee));
 
@@ -116,13 +119,18 @@ export function EmployeeDrawer({
             },
         });
     };
+    const handleImageSelect = (media: Partial<MediaItem>) => {
+        if (media.id !== undefined) {
+            setData('media_id', media.id);
+        }
+    };
+
 
     const handleClose = () => {
         reset();
         setOpen(false);
         onClose();
     };
-
     return (
         <Drawer open={open} onOpenChange={(val) => {
             setOpen(val);
@@ -214,6 +222,17 @@ export function EmployeeDrawer({
                                 ))}
                             </select>
                             <InputError message={errors.designation_id} />
+                        </div>
+
+                        <div className="mt-4">
+                            <SetFeaturedImage
+                                onSelect={handleImageSelect}
+                                initial={
+                                    Array.isArray(media) && media.length > 0 && data.media_id
+                                        ? media.find((img) => img.id === Number(data.media_id))
+                                        : undefined
+                                }
+                            />
                         </div>
 
                         {/* Status */}

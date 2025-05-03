@@ -182,7 +182,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
     return (
         <>
         <Dialog open onOpenChange={onClose}>
-            <DialogContent className="!w-[90vw] !max-w-[90vw] max-h-[90vh] p-0 flex flex-col">
+            <DialogContent className="!w-[95vw] !max-w-[95vw] max-h-[95vh] p-0 flex flex-col">
                 <DialogHeader className="p-4 border-b">
                     <DialogTitle>Total Feature Images: ({featuredCount})</DialogTitle>
                 </DialogHeader>
@@ -349,7 +349,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                         onClick={() => selected && onConfirm(selected)}
                         disabled={!selected}
                     >
-                        Add Featured Image
+                        Set featured image
                     </Button>
                 </DialogFooter>
             </DialogContent>
@@ -358,7 +358,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
             open={openDeleteDialog}
             onClose={() => setOpenDeleteDialog(false)}
             onConfirm={handleDelete}
-            title="Delete Image"
+            title="Confirm Deletion"
             description="This will permanently remove the image from the system."
         />
     </>

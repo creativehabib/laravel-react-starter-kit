@@ -19,6 +19,7 @@ export function transformEmployeeToFormData(employee: EmployeeType): EmployeeFor
         bank_account_number: employee.bank_account_number ?? '',
         bank_name: employee.bank_name ?? '',
         verify: employee.verify ?? '',
+        media_id: employee.media?.id || "",
         status: !!Number(employee.status), // ✅ convert "1" | "0" into true | false
         present_address: employee.present_address ?? '',
         permanent_address: employee.permanent_address ?? '',

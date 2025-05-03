@@ -24,6 +24,11 @@ const SetFeaturedImage: React.FC<Props> = ({ onSelect, initial }) => {
         setModalOpen(false);
     };
 
+    React.useEffect(() => {
+        setSelectedImage(initial || null);
+    }, [initial]);
+
+
     return (
         <div className="mb-4">
             <button
@@ -31,7 +36,8 @@ const SetFeaturedImage: React.FC<Props> = ({ onSelect, initial }) => {
                 onClick={() => setModalOpen(true)}
                 className="bg-blue-600 text-white cursor-pointer px-2 py-1 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 active:bg-blue-800 transition duration-200"
             >
-                Set Featured Image
+                {selectedImage ? 'Change Featured Image' : 'Select Featured Image'}
+
             </button>
 
             {selectedImage && (
@@ -40,6 +46,7 @@ const SetFeaturedImage: React.FC<Props> = ({ onSelect, initial }) => {
                     <input type="hidden" name="media_id" value={selectedImage.id} />
                 </div>
             )}
+
 
             {modalOpen && (
                 <MediaManagerModal onClose={() => setModalOpen(false)} onConfirm={handleSelect} />

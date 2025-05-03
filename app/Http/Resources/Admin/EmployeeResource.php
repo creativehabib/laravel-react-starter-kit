@@ -5,6 +5,7 @@ namespace App\Http\Resources\Admin;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class EmployeeResource extends JsonResource
 {
@@ -30,16 +31,19 @@ class EmployeeResource extends JsonResource
                 'id' => $this->designation->id,
                 'title' => $this->designation->title,
             ] : null,
+            'media' => $this->media ? [
+                'id' => $this->media->id,
+                'name' => $this->media->name,
+                'filename' => $this->media->filename,
+                'path' => $this->media->path,
+            ] : null,
             'status' => $this->status,
             'present_address' => $this->present_address,
             'permanent_address' => $this->permanent_address,
-            'designation_id' => $this->designation_id,
-            'department_id' => $this->department_id,
             'emergency_contact' => $this->emergency_contact,
             'blood_group' => $this->blood_group,
             'date_of_birth' => $this->date_of_birth,
             'joining_date' => $this->joining_date,
-            'employee_image' => $this->employee_image,
             'pf_number' => $this->pf_number,
             'bank_account_number' => $this->bank_account_number,
             'bank_name' => $this->bank_name,

@@ -11,6 +11,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 import SetFeaturedImage from '@/components/media-image-select';
 import { MediaItem } from '@/types/globals';
+import React from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

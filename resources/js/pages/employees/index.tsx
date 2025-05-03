@@ -1,7 +1,14 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { DepartmentType, DesignationType, EmployeeType, FlashProps, LinksType, MetaType } from '@/types/globals';
+import {
+    DepartmentType,
+    DesignationType,
+    EmployeeType,
+    FlashProps,
+    LinksType,
+    MetaType
+} from '@/types/globals';
 import React, { useEffect, useState } from 'react';
 import { Edit, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -10,6 +17,8 @@ import DeleteDialog from '@/components/delete-dialog';
 import InertiaPagination from '@/components/inertia-pagination';
 import Toggle from '@/components/toggle';
 import { EmployeeDrawer } from '@/pages/employees/form';
+import { MediaItem } from '@/types/globals';
+import { getImageUrl } from '@/helper/employee';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Employees', href: '/employees' },
@@ -28,11 +37,12 @@ interface EmployeesType {
 }
 
 export default function Index() {
-    const { flash, employees, departments, designations } = usePage<{
+    const { flash, employees, departments, designations, media } = usePage<{
         flash: FlashProps;
         employees: EmployeesType;
         departments: DepartmentType[];
         designations: DesignationType[];
+        media: MediaItem[];
     }>().props;
 
     const [editing, setEditing] = useState<EmployeeType | null>(null);
@@ -81,6 +91,7 @@ export default function Index() {
                             triggerLabel="Add Employee"
                             departments={departments}
                             designations={designations}
+                            media={media as MediaItem[]}
                             onClose={() => setEditing(null)}
                         />
                     </div>
@@ -90,6 +101,7 @@ export default function Index() {
                             <thead>
                             <tr className="bg-gray-700 text-white">
                                 <th className="border p-2">#</th>
+                                <th className='border p-2'>Image</th>
                                 <th className="border p-2 text-start">Name</th>
                                 <th className="border p-2 text-start">Department</th>
                                 <th className="border p-2">Designation</th>
@@ -103,6 +115,13 @@ export default function Index() {
                                 employees.data.map((employee, index) => (
                                     <tr key={employee.id}>
                                         <td className="border px-2 py-1 text-center">{employees.meta.from + index}</td>
+                                        <td className='border px-2 py-1 text-center'>
+                                            <img
+                                                src={getImageUrl(employee.media?.path, 400, 300, employee.media?.name || 'No Image')}
+                                                alt={employee.media.name}
+                                                className="h-10 w-10 rounded-full"
+                                            />
+                                        </td>
                                         <td className="border px-2 py-1">{employee.name}</td>
                                         <td className="border px-2 py-1">{employee.department?.name ?? '—'}</td>
                                         <td className='border px-2 py-1'>

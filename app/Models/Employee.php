@@ -20,4 +20,8 @@ class Employee extends Model
     {
         return $this->belongsTo(Designation::class);
     }
+    public function media()
+    {
+        return $this->belongsTo(Media::class);
+    }
 }

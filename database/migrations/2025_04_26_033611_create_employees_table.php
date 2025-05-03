@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Department::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Designation::class)->constrained()->onDelete('cascade');
+            $table->foreignId('media_id')->nullable()->constrained('media')->onDelete('cascade');
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone')->nullable();
@@ -31,6 +32,7 @@ return new class extends Migration
             $table->string('employee_image')->nullable();
             $table->string('status')->default('active');
             $table->string('verify')->default('unverified');
+            $table->string('position')->nullable();
             $table->string('pf_number')->nullable();
             $table->string('bank_account_number')->nullable();
             $table->string('bank_name')->nullable();

@@ -64,6 +64,7 @@ export interface EmployeeType {
     position: string;
     designation: DesignationType;
     department: DepartmentType;
+    media: MediaItem;
     user: UserType;
     joining_date: string;
     status: boolean;
@@ -80,6 +81,7 @@ export interface EmployeeType {
     about: string;
     designation_id: number | string;
     department_id: number | string;
+    media_id: number | string;
     user_id: string;
     created_at: string;
     updated_at: string;
@@ -94,6 +96,7 @@ export interface EmployeeFormData {
     position: string;
     department_id: string | number;
     designation_id: string | number;
+    media_id?: string | number;
     user_id?: string | number;
     pf_number: string;
     joining_date: string;
