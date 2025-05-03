@@ -37,6 +37,11 @@ class EmployeeResource extends JsonResource
                 'filename' => $this->media->filename,
                 'path' => $this->media->path,
             ] : null,
+            'user' => $this->user ? [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+                'email' => $this->user->email,
+            ] : null,
             'status' => $this->status,
             'present_address' => $this->present_address,
             'permanent_address' => $this->permanent_address,

@@ -29,7 +29,6 @@ return new class extends Migration
             $table->string('blood_group')->nullable();
             $table->date('date_of_birth')->nullable();
             $table->date('joining_date')->nullable();
-            $table->string('employee_image')->nullable();
             $table->string('status')->default('active');
             $table->string('verify')->default('unverified');
             $table->string('position')->nullable();
