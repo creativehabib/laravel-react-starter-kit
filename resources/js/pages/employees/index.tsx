@@ -115,7 +115,7 @@ export default function Index() {
                                 employees.data.map((employee, index) => (
                                     <tr key={employee.id}>
                                         <td className="border px-2 py-1 text-center">{employees.meta.from + index}</td>
-                                        <td className='border px-2 py-1 text-center'>
+                                        <td className='border px-2 py-1 text-center flex justify-center items-center'>
                                             <img
                                                 src={getImageUrl(employee.media?.path, 400, 300, employee.media?.name || 'No Image')}
                                                 alt={employee.media?.name}
