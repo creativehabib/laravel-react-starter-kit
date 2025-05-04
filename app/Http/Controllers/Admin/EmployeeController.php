@@ -97,8 +97,7 @@ class EmployeeController extends Controller
                 'date_of_birth',
             ]);
 
-            $data['status'] = $request->boolean('status'); // safer for checkbox
-            $data['verify'] = $request->boolean('verify');
+            $data['status'] = $request->boolean('status');
             $data['user_id'] = auth()->id();
 
             Employee::create($data);
@@ -167,6 +166,7 @@ class EmployeeController extends Controller
                 'media_id',
                 'status',
                 'about',
+                'verify',
             ]);
 
             $employee->update($data);
