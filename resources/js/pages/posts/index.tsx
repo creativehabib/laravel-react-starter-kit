@@ -6,7 +6,7 @@ import debounce from 'lodash/debounce';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { Input } from '@/components/ui/input';
-import { Edit, Search, Trash2 } from 'lucide-react';
+import { CirclePlus, Edit, Search, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -14,7 +14,6 @@ import { getImageUrl } from '@/helper/employee';
 import Toggle from '@/components/toggle';
 import InertiaPagination from '@/components/inertia-pagination';
 import DeleteDialog from '@/components/delete-dialog';
-import PostForm from '@/pages/posts/post-form';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -34,11 +33,9 @@ interface PostsType {
     total: number;
 }
 
-function Posts(){
-    const [showForm, setShowForm] = useState(false);
-    const [editing, setEditing] = useState<PostType | null>(null);
+export default function Posts(){
 
-    const { flash, posts, media } = usePage<{
+    const { flash, posts } = usePage<{
         flash: FlashProps;
         posts: PostsType;
         media: MediaItem[];
@@ -113,9 +110,12 @@ function Posts(){
                                 <Search size={16} aria-hidden="true" />
                             </div>
                         </div>
-                        <Button>
-                            <Link href={route('posts.create')} className="text-white">Add Post</Link>
-                        </Button>
+                        <Link href={route('posts.create')}>
+                            <Button className="cursor-pointer" variant="outline">
+                                <CirclePlus size={16}/>
+                                Add Post
+                            </Button>
+                        </Link>
                     </div>
 
                     <Card>
@@ -153,7 +153,7 @@ function Posts(){
                                                 </TableCell>
                                                 <TableCell className="space-x-1">
                                                     <button
-                                                        className="rounded bg-blue-500 cursor-pointer px-3 py-1 rounded text-white hover:bg-blue-600">
+                                                        className="rounded bg-blue-500 cursor-pointer px-3 py-1 text-white hover:bg-blue-600">
                                                         <Edit size={16} />
                                                     </button>
 
@@ -187,4 +187,3 @@ function Posts(){
         </>
     );
 }
-export default Posts;

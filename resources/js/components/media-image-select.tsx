@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import MediaManagerModal from '@/components/media-manager';
 export type MediaItem = {
-    id: number;
+    id: number | null;
     name: string;
     filename: string;
     path: string;
@@ -30,23 +30,38 @@ const SetFeaturedImage: React.FC<Props> = ({ onSelect, initial }) => {
 
 
     return (
-        <div className="mb-4">
+        <div className="mb-4 space-y-2">
             <button
                 type="button"
                 onClick={() => setModalOpen(true)}
-                className="bg-blue-600 text-white cursor-pointer px-2 py-1 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 active:bg-blue-800 transition duration-200"
+                className="bg-blue-600 text-white cursor-pointer px-3 py-1.5 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 active:bg-blue-800 transition duration-200"
             >
                 {selectedImage ? 'Change Featured Image' : 'Select Featured Image'}
-
             </button>
 
             {selectedImage && (
-                <div className="mt-2">
-                    <img src={`/storage/${selectedImage.path}`} className="h-24 rounded" alt={selectedImage.name}/>
-                    <input type="hidden" name="media_id" value={selectedImage.id} />
+                <div className="relative group w-fit">
+                    <img
+                        src={`/storage/${selectedImage.path}`}
+                        className="h-24 w-auto rounded shadow object-cover"
+                        alt={selectedImage.name}
+                    />
+
+                    {/* Remove the button on hover */}
+                    <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setSelectedImage(null);
+                                onSelect({ id: null });
+                            }}
+                            className="bg-red-600 hover:bg-red-700 text-white text-xs px-2 cursor-pointer py-1 rounded"
+                        >
+                            Remove
+                        </button>
+                    </div>
                 </div>
             )}
-
 
             {modalOpen && (
                 <MediaManagerModal onClose={() => setModalOpen(false)} onConfirm={handleSelect} />

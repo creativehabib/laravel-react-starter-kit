@@ -184,7 +184,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
         <Dialog open onOpenChange={onClose}>
             <DialogContent className="!w-[95vw] !max-w-[95vw] max-h-[95vh] p-0 flex flex-col">
                 <DialogHeader className="p-4 border-b">
-                    <DialogTitle>Total Feature Images: ({featuredCount})</DialogTitle>
+                    <DialogTitle>Feature Images: ({featuredCount})</DialogTitle>
                 </DialogHeader>
 
                 <div className="px-6 overflow-y-auto flex-1">
@@ -238,15 +238,15 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                         </div>
                                         {hasMore && (
                                             <div className="text-center mt-4">
-                                                <Button onClick={loadMore} disabled={loading}>
-                                                    {loading ? <Loader2 className="animate-spin mr-2" /> : 'Load More'}
+                                                <Button onClick={loadMore} variant='outline' disabled={loading} className='cursor-pointer'>
+                                                    {loading ? <Loader2 className="animate-spin" /> : 'Load More'}
                                                 </Button>
                                             </div>
                                         )}
                                     </div>
 
                                     {selected && (
-                                        <div className="w-64 border rounded p-4 bg-gray-50 dark:bg-gray-900">
+                                        <div className="w-64 border rounded p-4 bg-gray-50 dark:bg-slate-900">
                                             <img
                                                 src={`/storage/${selected.path}`}
                                                 alt={selected.name}
@@ -343,9 +343,10 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
 
                 <DialogFooter className="border-t p-4 bg-background">
                     <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
+                        <Button variant="outline" className='cursor-pointer'>Cancel</Button>
                     </DialogClose>
                     <Button
+                        className='cursor-pointer'
                         onClick={() => selected && onConfirm(selected)}
                         disabled={!selected}
                     >

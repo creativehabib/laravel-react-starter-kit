@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Undo2Icon } from 'lucide-react';
 import SetFeaturedImage from '@/components/media-image-select';
 import { MediaItem } from '@/types/globals';
 import React from 'react';
@@ -41,7 +41,7 @@ export default function CreatePost() {
     }
     const handleImageSelect = (media: Partial<MediaItem>) => {
         if (media.id !== undefined) {
-            setData('media_id', media.id);
+            setData('media_id', media.id ?? null);
         }
     };
     return (
@@ -52,11 +52,12 @@ export default function CreatePost() {
                     <div className="mb-5 flex items-center justify-between">
                         <div className="text-xl text-slate-600">Create Post</div>
 
-                        <Button>
-                            <Link href="/posts" prefetch>
-                                Go Back
-                            </Link>
-                        </Button>
+                        <Link href={route('posts.index')} as="button">
+                            <Button className="cursor-pointer" variant="outline">
+                                <Undo2Icon size={16}/>
+                                <span>Back</span>
+                            </Button>
+                        </Link>
                     </div>
 
                     <Card>
@@ -122,7 +123,7 @@ export default function CreatePost() {
                                 </div>
 
                                 <div className="mt-4 text-end">
-                                    <Button size={'lg'} type="submit" disabled={processing}>
+                                    <Button variant={'outline'} type="submit" className='cursor-pointer' disabled={processing}>
                                         {processing && <Loader2 className="animate-spin" />}
                                         <span>Create Post</span>
                                     </Button>
