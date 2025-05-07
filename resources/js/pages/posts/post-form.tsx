@@ -43,11 +43,10 @@ export default function PostForm({ post, onClose, onSuccess }: PostFormProps) {
         });
     };
 
-    const handleImageSelect = (media: Partial<MediaItem>) => {
-        if (media.id !== undefined) {
-            setData('media_id', media.id);
-        }
+    const handleImageSelect = (media: Partial<MediaItem> | null) => {
+        setData('media_id', media?.id ?? null);
     };
+
 
     return (
         <Card className="p-4 relative">

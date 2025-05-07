@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import MediaManagerModal from '@/components/media-manager';
 export type MediaItem = {
-    id: number | null;
+    id: number;
     name: string;
     filename: string;
     path: string;
@@ -10,7 +10,7 @@ export type MediaItem = {
 };
 
 interface Props {
-    onSelect: (media: Partial<MediaItem>) => void;
+    onSelect: (media: Partial<MediaItem> | null) => void;
     initial?: MediaItem;
 }
 
@@ -53,7 +53,7 @@ const SetFeaturedImage: React.FC<Props> = ({ onSelect, initial }) => {
                             type="button"
                             onClick={() => {
                                 setSelectedImage(null);
-                                onSelect({ id: null });
+                                onSelect(null);
                             }}
                             className="bg-red-600 hover:bg-red-700 text-white text-xs px-2 cursor-pointer py-1 rounded"
                         >

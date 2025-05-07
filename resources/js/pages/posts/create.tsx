@@ -39,9 +39,9 @@ export default function CreatePost() {
         e.preventDefault();
         post('/posts');
     }
-    const handleImageSelect = (media: Partial<MediaItem>) => {
-        if (media.id !== undefined) {
-            setData('media_id', media.id ?? null);
+    const handleImageSelect = (media: Partial<MediaItem> | null) => {
+        if (media?.id !== undefined) {
+            setData('media_id', media?.id ?? null);
         }
     };
     return (
