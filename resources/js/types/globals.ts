@@ -82,7 +82,7 @@ export interface EmployeeType {
     about: string;
     designation_id: number | string;
     department_id: number | string;
-    media_id: number | string;
+    media_id: number | null | undefined;
     user_id: string;
     created_at: string;
     updated_at: string;
@@ -97,7 +97,6 @@ export interface EmployeeFormData {
     position: string;
     department_id: string | number;
     designation_id: string | number;
-    media_id?: string | number;
     user_id?: string | number;
     pf_number: string;
     joining_date: string;
@@ -110,6 +109,7 @@ export interface EmployeeFormData {
     verify: string;
     status: boolean;
     present_address: string;
+    media_id: number | null | undefined;
     permanent_address: string;
     about: string;
 }
@@ -124,7 +124,7 @@ export interface BloodGroupType {
 }
 
 export type MediaItem = {
-    id: number;
+    id: number | null | undefined;
     name: string;
     filename: string;
     path: string;

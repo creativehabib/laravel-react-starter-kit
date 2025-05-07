@@ -32,7 +32,7 @@ export default function CreatePost() {
         category: '',
         status: '',
         content: '',
-        media_id: null as number | null,
+        media_id: null,
     });
 
     function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {

@@ -46,7 +46,7 @@ const initialFormData: EmployeeFormData = {
     bank_account_number: "",
     bank_name: "",
     verify: "",
-    media_id: '',
+    media_id: null,
     status: true,
     present_address: "",
     permanent_address: "",
@@ -119,9 +119,10 @@ export function EmployeeDrawer({
             },
         });
     };
-    const handleImageSelect = (media: Partial<MediaItem>) => {
-        if (media.id !== undefined) {
-            setData('media_id', media.id);
+
+    const handleImageSelect = (media: Partial<MediaItem> | null) => {
+        if (media?.id !== undefined) {
+            setData('media_id', media?.id ?? null);
         }
     };
 
@@ -225,6 +226,8 @@ export function EmployeeDrawer({
                         </div>
 
                         <div className="mt-4">
+
+
                             <SetFeaturedImage
                                 onSelect={handleImageSelect}
                                 initial={
