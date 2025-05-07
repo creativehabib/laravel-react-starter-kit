@@ -33,6 +33,7 @@ export interface PostType {
     category: string;
     status: boolean;
     media: MediaItem;
+    media_id: number | string;
     created_at: string;
     updated_at: string;
 }

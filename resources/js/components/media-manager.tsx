@@ -188,7 +188,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                 </DialogHeader>
 
                 <div className="px-6 overflow-y-auto flex-1">
-                    <Tabs defaultValue="upload" className="w-full">
+                    <Tabs defaultValue="library" className="w-full">
                         <TabsList className="mb-4">
                             <TabsTrigger value="upload">Upload files</TabsTrigger>
                             <TabsTrigger value="library">Media Library</TabsTrigger>

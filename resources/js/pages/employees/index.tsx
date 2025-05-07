@@ -9,8 +9,8 @@ import {
     LinksType,
     MetaType
 } from '@/types/globals';
-import React, { useEffect, useState } from 'react';
-import { Edit, Trash2 } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Edit, Search, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import DeleteDialog from '@/components/delete-dialog';
@@ -19,6 +19,8 @@ import Toggle from '@/components/toggle';
 import { EmployeeDrawer } from '@/pages/employees/form';
 import { MediaItem } from '@/types/globals';
 import { getImageUrl } from '@/helper/employee';
+import { Input } from '@/components/ui/input';
+import debounce from 'lodash/debounce';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Employees', href: '/employees' },
@@ -75,6 +77,22 @@ export default function Index() {
         });
     };
 
+    const handleSearch = useRef(
+        debounce((value: string) => {
+            const params: Record<string, string> = {};
+            if(value.trim() !== ''){
+                params.search = value;
+            }
+            router.get('/employees', params, { preserveState: true, replace: true });
+        }, 500),
+    ).current;
+
+    const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
+        const value = e.target.value;
+        handleSearch(value);
+
+    }
+
     useEffect(() => {
         if (flash?.success) toast.success(flash.success);
         if (flash?.error) toast.error(flash.error);
@@ -85,7 +103,19 @@ export default function Index() {
             <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title="Employees" />
                 <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
-                    <div className="ml-auto">
+                    <div className="flex items-center justify-between">
+                        <div className="relative md:w-1/4">
+                            <Input
+                                id="search"
+                                className="peer ps-9"
+                                placeholder="Search..."
+                                type="text"
+                                onChange={onSearchChange}
+                            />
+                            <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
+                                <Search size={16} aria-hidden="true" />
+                            </div>
+                        </div>
                         <EmployeeDrawer
                             employee={editing}
                             triggerLabel="Add Employee"

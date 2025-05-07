@@ -17,13 +17,18 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $query = Employee::query();
         $departments = Department::select('id', 'name')->get();
         $designations = Designation::select('id', 'title')->get();
         $media = Media::select('id', 'name', 'filename', 'path')->get();
 
-        $employees = Employee::with(['department', 'designation', 'media'])
+        if ($request->has('search') && $request->search !== null) {
+            $query->whereAny(['name', 'email'], 'like', '%' . $request->search . '%');
+        }
+
+        $employees = $query->with(['department', 'designation', 'media'])
             ->orderBy('created_at', 'desc')
             ->paginate(5)
             ->withQueryString();
@@ -51,7 +56,6 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-//        dd($request->all());
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:employees,email',
