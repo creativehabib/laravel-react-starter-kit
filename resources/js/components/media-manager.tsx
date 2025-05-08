@@ -198,7 +198,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                         <TabsContent value="upload">
                             <div
                                 {...getRootProps()}
-                                className="border-dashed border-2 border-gray-300 rounded p-10 text-center cursor-pointer bg-gray-50 dark:bg-gray-800"
+                                className="border-dashed border-2 border-gray-300 rounded p-10 text-center cursor-pointer bg-gray-50 dark:bg-gray-900"
                             >
                                 <input {...getInputProps()} />
                                 <p className="text-lg">Drop files to upload</p>
@@ -219,7 +219,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                             ) : (
                                 <div className="flex gap-4">
                                     <div className="flex-1 overflow-y-auto max-h-[30rem]">
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
                                             {media.map((img) => (
                                                 <div
                                                     key={img.id}
@@ -246,7 +246,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                     </div>
 
                                     {selected && (
-                                        <div className="w-64 border rounded p-4 bg-gray-50 dark:bg-slate-900">
+                                        <div className="w-64 border rounded p-4 bg-gray-50 dark:bg-gray-950">
                                             <img
                                                 src={`/storage/${selected.path}`}
                                                 alt={selected.name}
@@ -347,6 +347,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                     </DialogClose>
                     <Button
                         className='cursor-pointer'
+                        variant='outline'
                         onClick={() => selected && onConfirm(selected)}
                         disabled={!selected}
                     >

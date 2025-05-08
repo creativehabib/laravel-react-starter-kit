@@ -31,6 +31,11 @@ const mainNavItems: NavItem[] = [
         href: '/posts',
         icon: NotebookPen,
     },
+    {
+        title: 'Users',
+        href: '/users',
+        icon: UserRoundCog,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

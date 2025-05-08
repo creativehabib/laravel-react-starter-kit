@@ -46,6 +46,9 @@ export default function Posts(){
         if (flash.success) {
             toast.success(flash.success);
         }
+        if (flash.error) {
+            toast.error(flash.error);
+        }
     }, [flash]);
 
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -86,9 +89,9 @@ export default function Posts(){
         router.put(
             route('posts.toggle-status', id), {},
             {
-                preserveScroll: true,
-                preserveState: true, // 👈 ensures updated props come back
                 only: ['posts', 'flash'], // Re-fetch only these props
+                preserveScroll: true,
+                preserveState: false, // 👈 ensures updated props come back
             });
     }
 

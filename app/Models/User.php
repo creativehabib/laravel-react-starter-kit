@@ -20,6 +20,10 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
+        'media_id',
+        'status',
+        'about',
         'password',
     ];
 
@@ -61,5 +65,15 @@ class User extends Authenticatable
     public function designations()
     {
         return $this->hasMany(Designation::class);
+    }
+
+    public function bloodGroups()
+    {
+        return $this->hasMany(BloodGroup::class);
+    }
+
+    public function media()
+    {
+        return $this->belongsTo(Media::class);
     }
 }

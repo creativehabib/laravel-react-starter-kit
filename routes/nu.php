@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\DesignationController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -28,4 +29,8 @@ Route::middleware('auth')->group(function () {
     // Blood Group Routes
     Route::resource('blood-groups', BloodGroupController::class)->names('blood-groups');
     Route::post('/blood-groups/{id}/toggle-status', [BloodGroupController::class, 'toggleStatus'])->name('blood-groups.toggle-status');
+
+    // User Routes
+    Route::resource('users', UserController::class)->names('users');
+    Route::post('/users/{id}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
 });

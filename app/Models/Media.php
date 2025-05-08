@@ -10,4 +10,5 @@ class Media extends Model
         'name', 'filename', 'mime_type', 'path', 'size', 'created_by',
     ];
 
+
 }
