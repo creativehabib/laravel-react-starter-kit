@@ -253,11 +253,11 @@ export function EmployeeDrawer({
 
                     {/* Footer */}
                     <DrawerFooter className="border-t pt-4">
-                        <Button type="submit" disabled={processing}>
+                        <Button type="submit" disabled={processing} className='cursor-pointer' variant="outline">
                             {processing ? "Saving..." : isEditing ? "Update" : "Save"}
                         </Button>
                         <DrawerClose asChild>
-                            <Button type="button" variant="outline" onClick={handleClose}>
+                            <Button type="button" variant="outline" onClick={handleClose} className='cursor-pointer'>
                                 Cancel
                             </Button>
                         </DrawerClose>
