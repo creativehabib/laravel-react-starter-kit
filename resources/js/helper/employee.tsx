@@ -1,6 +1,28 @@
-import { EmployeeType, EmployeeFormData } from '@/types/globals';
+import { EmployeeType, UserType, UserFormData } from '@/types/globals';
 
-export function transformEmployeeToFormData(employee: EmployeeType): EmployeeFormData {
+export function transformEmployeeToFormData(employee: EmployeeType): {
+    id: number;
+    name: string;
+    email: string;
+    phone: string;
+    position: string;
+    department_id: number | string;
+    designation_id: number | string;
+    user_id: number | string;
+    pf_number: string;
+    joining_date: string;
+    date_of_birth: string;
+    blood_group: string;
+    emergency_contact: string;
+    bank_account_number: string;
+    bank_name: string;
+    verify: string;
+    media_id: number | null | undefined;
+    status: boolean;
+    present_address: string;
+    permanent_address: string;
+    about: string
+} {
     return {
         id: employee.id,
         name: employee.name ?? '',
@@ -15,11 +37,10 @@ export function transformEmployeeToFormData(employee: EmployeeType): EmployeeFor
         date_of_birth: employee.date_of_birth ?? '',
         blood_group: employee.blood_group ?? '',
         emergency_contact: employee.emergency_contact ?? '',
-        employee_image: employee.employee_image ?? '',
         bank_account_number: employee.bank_account_number ?? '',
         bank_name: employee.bank_name ?? '',
         verify: employee.verify ?? '',
-        media_id: employee.media?.id || "",
+        media_id: employee.media?.id ?? null,
         status: !!Number(employee.status), // ✅ convert "1" | "0" into true | false
         present_address: employee.present_address ?? '',
         permanent_address: employee.permanent_address ?? '',
@@ -32,4 +53,18 @@ export function getImageUrl(path?: string | null, width = 300, height = 200, tex
     }
 
     return `/storage/${path}`;
+}
+
+export function transformFormDataToUserData( user: UserType): UserFormData {
+    return {
+        id: user.id,
+        name: user.name ?? '',
+        email: user.email ?? '',
+        phone: user.phone ?? '',
+        status: !!Number(user.status), // ✅ convert "1" | "0" into true | false
+        about: user.about ?? '',
+        email_verified_at: user.email_verified_at ?? '',
+        media_id: user.media?.id ?? null,
+    };
+
 }

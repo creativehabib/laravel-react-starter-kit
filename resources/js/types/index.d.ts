@@ -1,5 +1,6 @@
 import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
+import { MediaItem } from '@/types/globals';
 
 export interface Auth {
     user: User;
@@ -36,7 +37,9 @@ export interface User {
     name: string;
     email: string;
     avatar?: string;
+    media: MediaItem;
     email_verified_at: string | null;
+    media_id: number | null | undefined;
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...

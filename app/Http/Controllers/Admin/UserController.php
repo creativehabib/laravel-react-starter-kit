@@ -41,7 +41,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'phone' => 'nullable|string|max:15',
+            'phone' => 'nullable|string|max:15|unique:users',
             'about' => 'nullable|string|max:500',
             'media_id' => 'nullable|exists:media,id',
         ]);
@@ -83,7 +83,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:15',
+            'phone' => 'nullable|string|max:15|unique:users,phone,' . $user->id,
             'about' => 'nullable|string|max:500',
             'media_id' => 'nullable|exists:media,id',
         ]);

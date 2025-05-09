@@ -26,6 +26,7 @@ export interface UserType {
     status: boolean;
     about: string;
     email_verified_at: string;
+    media_id: number | null | undefined;
     created_at: string;
     updated_at: string;
     profile_image: string;
@@ -118,7 +119,17 @@ export interface EmployeeFormData {
     about: string;
 }
 
-
+export interface UserFormData {
+    [key: string]: string | number | boolean | File | null | undefined; // ✅ Allow string keys with File and null types
+    id?: number;
+    name: string;
+    email: string;
+    phone: string;
+    status: boolean;
+    about: string;
+    email_verified_at: string;
+    media_id: number | null | undefined;
+}
 export interface BloodGroupType {
     id: number;
     name: string;

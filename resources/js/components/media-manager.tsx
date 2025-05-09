@@ -62,22 +62,32 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
     };
 
     const onDrop = (acceptedFiles: File[]) => {
-        const formData = new FormData();
-        formData.append('image', acceptedFiles[0]);
+        if (acceptedFiles.length === 0) return;
+
         setUploading(true);
 
-        axios.post('/media-upload', formData)
-            .then(() => {
-                toast.success('Image uploaded successfully');
-                fetchMedia(1);
+        const uploads = acceptedFiles.map(file => {
+            const formData = new FormData();
+            formData.append('image', file);
+            return axios.post('/media-upload', formData);
+        });
+
+        Promise.allSettled(uploads)
+            .then(results => {
+                const successes = results.filter(r => r.status === 'fulfilled').length;
+                const failures = results.filter(r => r.status === 'rejected').length;
+
+                if (successes) toast.success(`${successes} file(s) uploaded successfully`);
+                if (failures) toast.error(`${failures} file(s) failed to upload`);
+
+                fetchMedia(1); // reload media
             })
-            .catch((error) => {
-                console.error('Upload failed:', error);
-                toast.error('Upload failed');
+            .catch(err => {
+                console.error('Upload error:', err);
+                toast.error('Error uploading files');
             })
             .finally(() => setUploading(false));
     };
-
 
     // Sync editName with selected item
     useEffect(() => {
@@ -177,7 +187,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
             });
     };
 
-    const { getRootProps, getInputProps } = useDropzone({ onDrop });
+    const { getRootProps, getInputProps } = useDropzone({ onDrop, multiple: true, maxSize: 128 * 1024 * 1024 });
 
     return (
         <>
@@ -347,7 +357,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                     </DialogClose>
                     <Button
                         className='cursor-pointer'
-                        variant='outline'
+                        variant='default'
                         onClick={() => selected && onConfirm(selected)}
                         disabled={!selected}
                     >

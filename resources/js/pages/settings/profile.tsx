@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import { Textarea } from '@/components/ui/textarea';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,14 +23,18 @@ const breadcrumbs: BreadcrumbItem[] = [
 type ProfileForm = {
     name: string;
     email: string;
+    phone: string;
+    about?: string;
 }
 
 export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
     const { auth } = usePage<SharedData>().props;
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
+    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<ProfileForm>({
         name: auth.user.name,
         email: auth.user.email,
+        phone: (auth.user.phone as string) ?? '',
+        about: (auth.user.about as string) ?? '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -47,7 +52,6 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
             <SettingsLayout>
                 <div className="space-y-6">
                     <HeadingSmall title="Profile information" description="Update your name and email address" />
-
                     <form onSubmit={submit} className="space-y-6">
                         <div className="grid gap-2">
                             <Label htmlFor="name">Name</Label>
@@ -80,6 +84,38 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             />
 
                             <InputError className="mt-2" message={errors.email} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="phone">Phone</Label>
+
+                            <Input
+                                id="phone"
+                                type="text"
+                                className="mt-1 block w-full"
+                                value={data.phone}
+                                onChange={(e) => setData('phone', e.target.value)}
+                                required
+                                autoComplete="username"
+                                placeholder="Your phone number"
+                            />
+
+                            <InputError className="mt-2" message={errors.phone} />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="name">About</Label>
+
+                            <Textarea
+                                id="about"
+                                className="mt-1 block w-full"
+                                value={data.about}
+                                onChange={(e) => setData('about', e.target.value)}
+                                required
+                                autoComplete="username"
+                                placeholder="About you"
+                            />
+
+                            <InputError className="mt-2" message={errors.about} />
                         </div>
 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (

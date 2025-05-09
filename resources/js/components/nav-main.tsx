@@ -19,7 +19,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
         setOpenMenus((prev) => ({ ...prev, [title]: !prev[title] }));
     };
 
-    // Automatically open parent if any child matches current page
+    // Automatically open parent if any child matches the current page
     useEffect(() => {
         const expanded: Record<string, boolean> = {};
         items.forEach((item) => {
@@ -57,7 +57,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                         >
                                             {/* Always show the parent menu icon */}
                                             <span className={`mr-2 ${isCollapsed ? 'block' : ''}`}>
-                                                {item.icon && <item.icon />}
+                                                {item.icon && <item.icon/>}
                                             </span>
                                             {!isCollapsed && <span className="whitespace-nowrap">{item.title}</span>}
                                             {openMenus[item.title] ? (
@@ -77,7 +77,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
 
-                            {/* Display child menu if open and sidebar is expanded or toggled */}
+                            {/* Display a child menu if open, and the sidebar are expanded or toggled */}
                             {hasChildren && openMenus[item.title] && (
                                 <div className="pl-6">
                                     {Array.isArray(item.children) &&
