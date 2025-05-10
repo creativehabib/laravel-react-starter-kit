@@ -10,11 +10,12 @@ import {
     DialogClose,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { EditIcon, Loader2, TrashIcon } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useDropzone } from 'react-dropzone';
 import toast from 'react-hot-toast';
 import DeleteDialog from '@/components/delete-dialog';
+import MediaCropper from './media-cropper';
 
 interface Props {
     onClose: () => void;
@@ -216,6 +217,29 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
 
     const { getRootProps, getInputProps } = useDropzone({ onDrop, multiple: true, maxSize: 128 * 1024 * 1024 });
 
+
+    // Inside your MediaManagerModal component
+    const [isCropping, setIsCropping] = useState(false); // Track if the cropper is open
+
+    const handleCropImage = () => {
+        setIsCropping(true); // Open the cropper when the user clicks the "edit" button
+    };
+
+    const handleCropComplete = (croppedBlob: Blob) => {
+        if (!selected) return;
+
+        const originalName = selected.name || 'cropped';
+        const filename = originalName.endsWith('.jpg') || originalName.endsWith('.webp') || originalName.endsWith('.png')
+            ? originalName
+            : originalName + '.jpg';
+
+        const file = new File([croppedBlob], filename, { type: croppedBlob.type });
+
+        handleImageChange(file);
+        setIsCropping(false);
+    };
+
+
     return (
         <>
         <Dialog open onOpenChange={onClose}>
@@ -230,7 +254,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                             <TabsTrigger value="upload" className="text-black dark:text-white">Upload files</TabsTrigger>
                             <TabsTrigger value="url" className="text-black dark:text-white">Upload from Link</TabsTrigger>
                             <TabsTrigger value="library" className="text-black dark:text-white">Media Library</TabsTrigger>
-                            <TabsTrigger value="optimole" className="text-black dark:text-white">Optimole</TabsTrigger>
+                            <TabsTrigger value="optimole" className="text-black dark:text-white">Optimise</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="upload">
@@ -261,7 +285,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                             {media.map((img) => (
                                                 <div
                                                     key={img.id}
-                                                    className={`rounded border-2 overflow-hidden cursor-pointer ${
+                                                    className={`rounded border-2 relative group overflow-hidden cursor-pointer ${
                                                         selected?.id === img.id ? 'border-blue-500' : 'border-transparent'
                                                     }`}
                                                     onClick={() => setSelected(img)}
@@ -271,12 +295,46 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                                         alt={img.name || 'Image'}
                                                         className="w-full h-32 object-cover"
                                                     />
+
+                                                    {/* crop image edits the button on hover */}
+                                                    <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                                        <button
+                                                            onClick={handleCropImage}
+                                                            type="button"
+                                                            className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-2 cursor-pointer py-1 rounded"
+                                                        >
+                                                            <EditIcon className="w-4 h-4"/>
+                                                        </button>
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            className="hidden"
+                                                            onChange={(e) => {
+                                                                const file = e.target.files?.[0];
+                                                                if (file) handleImageChange(file);
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    {/* delete image button */}
+                                                    <div className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                                        <button
+                                                            className="px-2 py-1 cursor-pointer bg-red-600 text-xs text-white rounded hover:bg-red-700"
+                                                            onClick={() => {
+                                                                setDeletingImage(selected);
+                                                                setOpenDeleteDialog(true);
+                                                            }}
+                                                        >
+                                                            <TrashIcon className="w-4 h-4"/>
+                                                        </button>
+                                                    </div>
+
                                                 </div>
+
                                             ))}
                                         </div>
                                         {hasMore && (
                                             <div className="text-center mt-4">
-                                                <Button onClick={loadMore} variant='outline' disabled={loading} className='cursor-pointer'>
+                                                <Button onClick={loadMore} variant='default' disabled={loading} className='cursor-pointer'>
                                                     {loading ? <Loader2 className="animate-spin" /> : 'Load More'}
                                                 </Button>
                                             </div>
@@ -290,10 +348,10 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                                 alt={selected.name}
                                                 className="w-full h-40 object-cover rounded"
                                             />
-                                            {/* Edit & Delete Buttons */}
-                                            <div className="flex justify-end mt-1 space-x-1">
+                                            {/* Replace image buttons */}
+                                            <div className="text-center mt-1">
                                                 <label className="inline-flex items-center px-2 py-1 bg-blue-600 text-white text-xs rounded cursor-pointer hover:bg-blue-700">
-                                                    Change
+                                                    Replace Image
                                                     <input
                                                         type="file"
                                                         accept="image/*"
@@ -304,18 +362,6 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                                         }}
                                                     />
                                                 </label>
-
-                                                <Button
-                                                    variant="destructive"
-                                                    className="px-2 py-1 cursor-pointer bg-red-600 text-xs text-white rounded hover:bg-red-700"
-                                                    size="sm"
-                                                    onClick={() => {
-                                                        setDeletingImage(selected);
-                                                        setOpenDeleteDialog(true);
-                                                    }}
-                                                >
-                                                    Delete
-                                                </Button>
                                             </div>
                                             <div>
                                                 <p className="font-semibold">Name:</p>
@@ -398,7 +444,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
 
 
                         <TabsContent value="optimole">
-                            <div className="text-center py-10 text-muted-foreground">Optimole integration coming soon...</div>
+                            <div className="text-center py-10 text-muted-foreground">Optimise integration coming soon...</div>
                         </TabsContent>
                     </Tabs>
                 </div>
@@ -418,6 +464,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                 </DialogFooter>
             </DialogContent>
         </Dialog>
+
         <DeleteDialog
             open={openDeleteDialog}
             onClose={() => setOpenDeleteDialog(false)}
@@ -425,6 +472,15 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
             title="Confirm Deletion"
             description="This will permanently remove the image from the system."
         />
+
+        {/* Render MediaCropper if isCropping is true */}
+        {isCropping && selected && (
+            <MediaCropper
+                imageSrc={`/storage/${selected.path}?t=${selected.updated_at}`}
+                onCancel={() => setIsCropping(false)}
+                onCropComplete={handleCropComplete}
+            />
+        )}
     </>
     );
 };
