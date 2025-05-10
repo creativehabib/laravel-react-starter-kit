@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('mime_type');
             $table->string('path');
             $table->unsignedInteger('size');
+            $table->integer('width')->nullable();
+            $table->integer('height')->nullable();
             $table->foreignId('created_by')->nullable();
             $table->timestamps();
         });

@@ -148,6 +148,8 @@ export type MediaItem = {
     type: string;
     created_at: number;
     updated_at?: string;
+    width: number;
+    height: number;
     preview?: string;
 };
 export interface BloodTypeType {

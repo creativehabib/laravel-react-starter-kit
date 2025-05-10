@@ -34,6 +34,8 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [deletingImage, setDeletingImage] = useState<MediaItem | null>(null);
 
+    const [imageUrl, setImageUrl] = useState('');
+
 
     useEffect(() => {
         fetchMedia(1);
@@ -112,18 +114,20 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                 setEditName(selected.name); // revert to the previous name
             });
     };
-
+    const urlInputRef = React.useRef<HTMLInputElement | null>(null);
 
     const handleCopy = (text: string) => {
         if (navigator.clipboard) {
             navigator.clipboard.writeText(text).then(() => {
                 toast.success('Copied to clipboard');
+                if (urlInputRef.current) {
+                    urlInputRef.current.select(); // Focus the input after copying
+                }
             }).catch((err) => {
                 console.error('Copy failed:', err);
                 toast.error('Failed to copy');
             });
         } else {
-            // Fallback for older browsers
             const textarea = document.createElement('textarea');
             textarea.value = text;
             textarea.style.position = 'fixed';
@@ -133,6 +137,9 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
             try {
                 document.execCommand('copy');
                 toast.success('Copied to clipboard');
+                if (urlInputRef.current) {
+                    urlInputRef.current.select(); // Focus the input after copying
+                }
             } catch (err) {
                 console.error('Fallback copy failed:', err);
                 toast.error('Copy not supported');
@@ -140,6 +147,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
             document.body.removeChild(textarea);
         }
     };
+
 
     const handleImageChange = (file: string | Blob) => {
         if (!file || !selected) return;
@@ -187,6 +195,25 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
             });
     };
 
+    // upload form url
+    const handleUrlUpload = () => {
+        if (!imageUrl) return toast.error('Please provide a valid image URL');
+
+        setUploading(true);
+
+        axios.post('/media-upload-from-url', { url: imageUrl })
+            .then(() => {
+                toast.success('Image uploaded from link');
+                setImageUrl('');
+                fetchMedia(1);
+            })
+            .catch(err => {
+                console.error('URL upload failed:', err);
+                toast.error('Upload from URL failed');
+            })
+            .finally(() => setUploading(false));
+    };
+
     const { getRootProps, getInputProps } = useDropzone({ onDrop, multiple: true, maxSize: 128 * 1024 * 1024 });
 
     return (
@@ -199,10 +226,11 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
 
                 <div className="px-6 overflow-y-auto flex-1">
                     <Tabs defaultValue="library" className="w-full">
-                        <TabsList className="mb-4">
-                            <TabsTrigger value="upload">Upload files</TabsTrigger>
-                            <TabsTrigger value="library">Media Library</TabsTrigger>
-                            <TabsTrigger value="optimole">Optimole</TabsTrigger>
+                        <TabsList className="mb-4 sticky top-0 z-10 bg-white dark:bg-gray-800">
+                            <TabsTrigger value="upload" className="text-black dark:text-white">Upload files</TabsTrigger>
+                            <TabsTrigger value="url" className="text-black dark:text-white">Upload from Link</TabsTrigger>
+                            <TabsTrigger value="library" className="text-black dark:text-white">Media Library</TabsTrigger>
+                            <TabsTrigger value="optimole" className="text-black dark:text-white">Optimole</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="upload">
@@ -318,12 +346,15 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                                         })
                                                     }
                                                 </p>
+                                                <p className="font-semibold">Dimensions:</p>
+                                                <p className="mb-2">{selected.width} × {selected.height} px</p>
 
                                                 {/* Full URL Copy */}
                                                 <div className="mt-4">
                                                     <p className="font-semibold">Full URL:</p>
                                                     <div className="flex items-center space-x-2 overflow-hidden">
                                                         <input
+                                                            ref={urlInputRef}
                                                             type="text"
                                                             readOnly
                                                             value={`${window.location.origin}/storage/${selected.path}`}
@@ -344,6 +375,27 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                 </div>
                             )}
                         </TabsContent>
+
+                        {/*upload from url*/}
+                        <TabsContent value="url">
+                            <div className="max-w-md mx-auto space-y-4">
+                                <p className="text-sm text-muted-foreground">Paste the direct image URL to upload:</p>
+                                <div className="flex items-center space-x-2">
+                                    <input
+                                        type="url"
+                                        placeholder="https://example.com/image.jpg"
+                                        value={imageUrl}
+                                        onChange={(e) => setImageUrl(e.target.value)}
+                                        className="flex-1 border rounded px-3 py-2 text-sm"
+                                    />
+                                    <Button onClick={handleUrlUpload} disabled={uploading}>
+                                        {uploading ? <Loader2 className="animate-spin mr-2" /> : null}
+                                        Upload
+                                    </Button>
+                                </div>
+                            </div>
+                        </TabsContent>
+
 
                         <TabsContent value="optimole">
                             <div className="text-center py-10 text-muted-foreground">Optimole integration coming soon...</div>
