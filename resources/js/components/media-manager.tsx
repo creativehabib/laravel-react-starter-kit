@@ -10,12 +10,13 @@ import {
     DialogClose,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { EditIcon, Loader2, TrashIcon } from 'lucide-react';
+import { EditIcon, Loader2, SearchIcon, TrashIcon } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useDropzone } from 'react-dropzone';
 import toast from 'react-hot-toast';
 import DeleteDialog from '@/components/delete-dialog';
 import MediaCropper from './media-cropper';
+import { Input } from '@/components/ui/input';
 
 interface Props {
     onClose: () => void;
@@ -250,12 +251,26 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
 
                 <div className="px-6 overflow-y-auto flex-1">
                     <Tabs defaultValue="library" className="w-full">
-                        <TabsList className="mb-4 sticky top-0 z-10 bg-white dark:bg-gray-800">
-                            <TabsTrigger value="upload" className="text-black dark:text-white">Upload files</TabsTrigger>
-                            <TabsTrigger value="url" className="text-black dark:text-white">Upload from Link</TabsTrigger>
-                            <TabsTrigger value="library" className="text-black dark:text-white">Media Library</TabsTrigger>
-                            <TabsTrigger value="optimole" className="text-black dark:text-white">Optimise</TabsTrigger>
-                        </TabsList>
+                        <div className="flex items-center justify-between">
+                            <TabsList className="mb-4 sticky top-0 z-10 bg-white dark:bg-gray-800">
+                                <TabsTrigger value="upload" className="text-black dark:text-white">Upload files</TabsTrigger>
+                                <TabsTrigger value="url" className="text-black dark:text-white">Upload from Link</TabsTrigger>
+                                <TabsTrigger value="library" className="text-black dark:text-white">Media Library</TabsTrigger>
+                                <TabsTrigger value="optimole" className="text-black dark:text-white">Optimise</TabsTrigger>
+                            </TabsList>
+
+                            <div className="flex items-center justify-end mt-2 mb-4">
+                                <div className="relative w-full max-w-xs">
+                                    <Input
+                                        type="text"
+                                        placeholder="Search..."
+                                        className="pl-10 pr-4"
+                                    />
+                                    <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
+                                </div>
+                            </div>
+
+                        </div>
 
                         <TabsContent value="upload">
                             <div
@@ -426,19 +441,24 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                         <TabsContent value="url">
                             <div className="max-w-md mx-auto space-y-4">
                                 <p className="text-sm text-muted-foreground">Paste the direct image URL to upload:</p>
-                                <div className="flex items-center space-x-2">
-                                    <input
+                                <div className="flex w-full max-w-md flex-col sm:flex-row sm:items-center gap-2 mb-4">
+                                    <Input
                                         type="url"
                                         placeholder="https://example.com/image.jpg"
                                         value={imageUrl}
                                         onChange={(e) => setImageUrl(e.target.value)}
-                                        className="flex-1 border rounded px-3 py-2 text-sm"
+                                        className="flex-1 text-sm"
                                     />
-                                    <Button onClick={handleUrlUpload} disabled={uploading}>
-                                        {uploading ? <Loader2 className="animate-spin mr-2" /> : null}
+                                    <Button
+                                        onClick={handleUrlUpload}
+                                        disabled={uploading || !imageUrl}
+                                        className="w-full sm:w-auto"
+                                    >
+                                        {uploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                         Upload
                                     </Button>
                                 </div>
+
                             </div>
                         </TabsContent>
 
