@@ -48,38 +48,71 @@ export default function CreatePost() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create Posts" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="rounded border p-6 shadow-xl">
-                    <div className="mb-5 flex items-center justify-between">
-                        <div className="text-xl text-slate-600">Create Post</div>
+                <div className="flex items-center justify-between">
+                    <div className="text-xl text-slate-600">Create Post</div>
 
-                        <Link href={route('posts.index')} as="button">
-                            <Button className="cursor-pointer" variant="outline">
-                                <Undo2Icon size={16}/>
-                                <span>Back</span>
-                            </Button>
-                        </Link>
-                    </div>
-
-                    <Card>
-                        <CardContent>
-                            <form onSubmit={handleFormSubmit}>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="col-span-2">
-                                        <Label htmlFor="title">Title</Label>
-                                        <Input
-                                            type="text"
-                                            id="title"
-                                            placeholder="Title"
-                                            value={data.title}
-                                            onChange={(e) => setData('title', e.target.value)}
-                                            aria-invalid={!!errors.title}
-                                        />
-                                        <InputError message={errors.title} />
+                    <Link href={route('posts.index')} as="button">
+                        <Button className="cursor-pointer" variant="outline">
+                            <Undo2Icon size={16} />
+                            <span>Back</span>
+                        </Button>
+                    </Link>
+                </div>
+                <form onSubmit={handleFormSubmit}>
+                    <div className="grid grid-cols-4 gap-4">
+                        {/* Main Content (3/4 width) */}
+                        <div className="col-span-4 md:col-span-3">
+                            <Card>
+                                <CardContent>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="col-span-2">
+                                            <Label htmlFor="title">Title</Label>
+                                            <Input
+                                                type="text"
+                                                id="title"
+                                                placeholder="Title"
+                                                value={data.title}
+                                                onChange={(e) => setData('title', e.target.value)}
+                                                aria-invalid={!!errors.title}
+                                            />
+                                            <InputError message={errors.title} />
+                                        </div>
                                     </div>
-                                    <div className="col-span-2 md:col-span-1">
+
+                                    <div className="mt-4">
+                                        <Label htmlFor="content">Content</Label>
+                                        <Textarea
+                                            rows={6}
+                                            id="content"
+                                            placeholder="Type content here..."
+                                            value={data.content}
+                                            onChange={(e) => setData('content', e.target.value)}
+                                            aria-invalid={!!errors.content}
+                                        />
+                                        <InputError message={errors.content} />
+                                    </div>
+
+
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                        {/* Sidebar (1/4 width) */}
+                        <div className="col-span-4 md:col-span-1">
+                            <Card>
+                                <CardContent>
+                                    <div className=''>
+                                        <div className="">
+                                            <Button className='cursor-pointer' disabled={processing}>
+                                                {processing && <Loader2 className="animate-spin" />}
+                                                <span>Publish</span>
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <div className="mt-4">
                                         <Label htmlFor="category">Category</Label>
                                         <Select value={data.category} onValueChange={(e) => setData('category', e)}>
-                                            <SelectTrigger id="category" aria-invalid={!!errors.category}>
+                                            <SelectTrigger id="category" aria-invalid={!!errors.category} className="w-full">
                                                 <SelectValue placeholder="Select Category" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -89,11 +122,10 @@ export default function CreatePost() {
                                         </Select>
                                         <InputError message={errors.category} />
                                     </div>
-
-                                    <div className="col-span-2 md:col-span-1">
+                                    <div className="mt-4">
                                         <Label htmlFor="status">Status</Label>
                                         <Select value={data.status} onValueChange={(e) => setData('status', e)}>
-                                            <SelectTrigger id="status" aria-invalid={!!errors.status}>
+                                            <SelectTrigger id="status" aria-invalid={!!errors.status} className="w-full">
                                                 <SelectValue placeholder="Select Status" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -103,36 +135,18 @@ export default function CreatePost() {
                                         </Select>
                                         <InputError message={errors.status} />
                                     </div>
-                                </div>
+                                    <div className="mt-4">
+                                        <h6 className='mb-4'>Featured Image</h6>
+                                        <SetFeaturedImage onSelect={handleImageSelect} />
+                                    </div>
+                                </CardContent>
+                            </Card>
 
-                                <div className="mt-4">
-                                    <Label htmlFor="content">Content</Label>
-                                    <Textarea
-                                        rows={6}
-                                        id="content"
-                                        placeholder="Type content here..."
-                                        value={data.content}
-                                        onChange={(e) => setData('content', e.target.value)}
-                                        aria-invalid={!!errors.content}
-                                    />
-                                    <InputError message={errors.content} />
-                                </div>
-
-                                <div className='mt-4'>
-                                    <SetFeaturedImage onSelect={handleImageSelect}/>
-                                </div>
-
-                                <div className="mt-4 text-end">
-                                    <Button variant={'outline'} type="submit" className='cursor-pointer' disabled={processing}>
-                                        {processing && <Loader2 className="animate-spin" />}
-                                        <span>Create Post</span>
-                                    </Button>
-                                </div>
-                            </form>
-                        </CardContent>
-                    </Card>
-                </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </AppLayout>
+
     );
 }

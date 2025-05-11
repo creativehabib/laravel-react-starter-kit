@@ -256,15 +256,15 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
 
                 <div className="px-6 flex-1 overflow-y-auto h-[calc(100vh-2rem)]">
                     <Tabs defaultValue="library" className="w-full">
-                        <div className="flex items-center justify-between m-4">
-                            <TabsList className="sticky top-0 z-10 bg-gray-50 dark:bg-gray-800">
+                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 m-4">
+                            <TabsList className="sticky top-0 z-10 bg-gray-50 dark:bg-gray-800 flex flex-wrap">
                                 <TabsTrigger value="upload" className="text-black dark:text-white">Upload files</TabsTrigger>
                                 <TabsTrigger value="url" className="text-black dark:text-white">Upload from Link</TabsTrigger>
                                 <TabsTrigger value="library" className="text-black dark:text-white">Media Library</TabsTrigger>
                                 <TabsTrigger value="optimole" className="text-black dark:text-white">Optimise</TabsTrigger>
                             </TabsList>
 
-                            <div className="flex items-center justify-end">
+                            <div className="flex justify-end w-full md:w-auto">
                                 <div className="relative w-full max-w-xs">
                                     <Input
                                         type="text"
@@ -276,13 +276,13 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                     <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
                                 </div>
                             </div>
-
                         </div>
 
-                        <TabsContent value="upload">
+
+                        <TabsContent value="upload" className='flex flex-col-1 items-center justify-center'>
                             <div
                                 {...getRootProps()}
-                                className="border-dashed border-2 border-gray-300 rounded p-10 text-center cursor-pointer bg-gray-50 dark:bg-gray-900"
+                                className="border-dashed border-2 border-gray-300 w-full h-full rounded p-15 text-center cursor-pointer bg-gray-50 dark:bg-gray-900"
                             >
                                 <input {...getInputProps()} />
                                 <p className="text-lg">Drop files to upload</p>

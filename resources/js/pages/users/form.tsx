@@ -45,12 +45,12 @@ const UserDrawerForm = ({
 
     // Form field configuration
     const formFields = [
-        { id: 'name', label: 'Name', type: 'text', component: Input },
-        { id: 'email', label: 'Email', type: 'email', component: Input },
-        { id: 'phone', label: 'Phone', type: 'text', component: Input },
-        { id: 'about', label: 'About', component: Textarea },
-        { id: 'password', label: 'Password', type: 'password', component: Input },
-        { id: 'password_confirmation', label: 'Confirm Password', type: 'password', component: Input },
+        {id: 'name', label: 'Name', type: 'text', component: Input, placeholder: 'Enter your name'},
+        { id: 'email', label: 'Email', type: 'email', component: Input, placeholder: 'Enter your email'},
+        { id: 'phone', label: 'Phone', type: 'text', component: Input, placeholder: 'Enter your phone number'},
+        { id: 'about', label: 'About', component: Textarea, placeholder: 'Tell us about yourself'},
+        { id: 'password', label: 'Password', type: 'password', component: Input, placeholder: 'Enter your password'},
+        { id: 'password_confirmation', label: 'Confirm Password', type: 'password', component: Input, placeholder: 'Re-enter your password'},
     ];
 
     useEffect(() => {
@@ -141,6 +141,7 @@ const UserDrawerForm = ({
                                         name={field.id}
                                         value={data[field.id as keyof UserFormData] as string}
                                         onChange={handleChange}
+                                        placeholder={field.placeholder}
                                         type={field.type || 'text'}
                                     />
                                     <InputError message={errors[field.id as keyof typeof errors]} />

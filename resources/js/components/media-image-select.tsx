@@ -46,23 +46,17 @@ const SetFeaturedImage: React.FC<Props> = ({ onSelect, initial }) => {
             </Button>
 
             {selectedImage && (
-                <div className="relative group w-fit">
+                <div className="relative group">
                     <img
                         src={`/storage/${selectedImage.path}`}
-                        className="h-24 w-auto rounded shadow object-cover"
+                        className="max-h-fit w-full rounded shadow object-cover"
                         alt={selectedImage.name}
                     />
 
                     {/* Remove the button on hover */}
                     <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setSelectedImage(null);
-                                onSelect({ id: null });
-                            }}
-                            className="bg-red-600 hover:bg-red-700 text-white text-xs px-2 cursor-pointer py-1 rounded"
-                        >
+                        <button type="button" onClick={() => { setSelectedImage(null); onSelect({ id: null });}}
+                            className="bg-red-600 hover:bg-red-700 text-white text-xs px-2 cursor-pointer py-1 rounded">
                             Remove
                         </button>
                     </div>

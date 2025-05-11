@@ -67,22 +67,23 @@ export function EmployeeDrawer({
 
     // Form field configuration
     const formFields = [
-        { id: 'name', label: 'Name', type: 'text', component: Input },
-        { id: 'email', label: 'Email', type: 'email', component: Input },
-        { id: 'position', label: 'Position', type: 'text', component: Input },
-        { id: 'phone', label: 'Phone', type: 'text', component: Input },
-        { id: 'present_address', label: 'Present Address', component: Textarea },
-        { id: 'permanent_address', label: 'Permanent Address', component: Textarea },
-        { id: 'bank_account_number', label: 'Bank Account Number', type: 'text', component: Input },
-        { id: 'bank_name', label: 'Bank Name', type: 'text', component: Input },
-        { id: 'pf_number', label: 'PF Number', type: 'text', component: Input },
-        { id: 'date_of_birth', label: 'Date of Birth', type: 'date', component: Input },
-        { id: 'joining_date', label: 'Joining Date', type: 'date', component: Input },
-        { id: 'blood_group', label: 'Blood Group', type: 'text', component: Input },
-        { id: 'verify', label: 'Verify', type: 'text', component: Input },
-        { id: 'emergency_contact', label: 'Emergency Contact', type: 'text', component: Input },
-        { id: 'about', label: 'About', component: Textarea },
+        { id: 'name', label: 'Name', type: 'text', component: Input, placeholder: 'Enter Name' },
+        { id: 'email', label: 'Email', type: 'email', component: Input, placeholder: 'Enter Email' },
+        { id: 'position', label: 'Position', type: 'text', component: Input, placeholder: 'Enter Position' },
+        { id: 'phone', label: 'Phone', type: 'text', component: Input, placeholder: 'Enter Phone' },
+        { id: 'present_address', label: 'Present Address', component: Textarea, placeholder: 'Enter Present Address' },
+        { id: 'permanent_address', label: 'Permanent Address', component: Textarea, placeholder: 'Enter Permanent Address' },
+        { id: 'bank_account_number', label: 'Bank Account Number', type: 'text', component: Input, placeholder: 'Enter Bank Account Number' },
+        { id: 'bank_name', label: 'Bank Name', type: 'text', component: Input, placeholder: 'Enter Bank Name' },
+        { id: 'pf_number', label: 'PF Number', type: 'text', component: Input, placeholder: 'Enter PF Number' },
+        { id: 'date_of_birth', label: 'Date of Birth', type: 'date', component: Input, placeholder: 'Select Date of Birth' },
+        { id: 'joining_date', label: 'Joining Date', type: 'date', component: Input, placeholder: 'Select Joining Date' },
+        { id: 'blood_group', label: 'Blood Group', type: 'text', component: Input, placeholder: 'Enter Blood Group' },
+        { id: 'verify', label: 'Verify', type: 'text', component: Input, placeholder: 'Enter Verification Info' },
+        { id: 'emergency_contact', label: 'Emergency Contact', type: 'text', component: Input, placeholder: 'Enter Emergency Contact' },
+        { id: 'about', label: 'About', component: Textarea, placeholder: 'Write something about the employee' },
     ];
+
 
     React.useEffect(() => {
         if (employee) {
@@ -169,19 +170,21 @@ export function EmployeeDrawer({
                         {formFields.map((field) => {
                             const FieldComponent = field.component;
                             return (
-                                <div key={field.id}>
-                                    <Label htmlFor={field.id} className='mb-4'>{field.label}</Label>
+                                <div key={field.id} className="mb-4">
+                                    <Label htmlFor={field.id} className="mb-2 block">{field.label}</Label>
                                     <FieldComponent
                                         id={field.id}
                                         name={field.id}
                                         value={data[field.id as keyof EmployeeFormData] as string}
                                         onChange={handleChange}
                                         type={field.type || 'text'}
+                                        placeholder={field.placeholder} // ✅ Add this line
                                     />
                                     <InputError message={errors[field.id as keyof typeof errors]} />
                                 </div>
                             );
                         })}
+
 
 
                         {/* Department */}
