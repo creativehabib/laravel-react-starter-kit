@@ -249,12 +249,12 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
     return (
         <>
         <Dialog open onOpenChange={onClose}>
-            <DialogContent className="!w-[95vw] !max-w-[95vw] max-h-[95vh] p-0 flex flex-col">
+            <DialogContent className="!w-[95vw] !max-w-[95vw] !h-[calc(100vh-2rem)] p-0 flex flex-col overflow-hidden">
                 <DialogHeader className="p-4 border-b">
                     <DialogTitle>Feature Images: ({featuredCount})</DialogTitle>
                 </DialogHeader>
 
-                <div className="px-6 overflow-y-auto flex-1">
+                <div className="px-6 flex-1 overflow-y-auto h-[calc(100vh-2rem)]">
                     <Tabs defaultValue="library" className="w-full">
                         <div className="flex items-center justify-between m-4">
                             <TabsList className="sticky top-0 z-10 bg-gray-50 dark:bg-gray-800">
@@ -302,7 +302,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                 </div>
                             ) : (
                                 <div className="flex gap-4">
-                                    <div className="flex-1 overflow-y-auto max-h-[30rem]">
+                                    <div className="flex-1 overflow-y-auto max-h-[40rem]">
                                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
                                             {media.map((img) => (
                                                 <div
@@ -315,7 +315,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                                     <img
                                                         src={`/storage/${img.path}?t=${img.updated_at || Date.now()}`}
                                                         alt={img.name || 'Image'}
-                                                        className="w-full h-32 object-cover"
+                                                        className="w-full h-24 sm:h-32 object-cover"
                                                     />
 
                                                     {/* crop image edits the button on hover */}
@@ -364,7 +364,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                     </div>
 
                                     {selected && (
-                                        <div className="w-64 border rounded p-4 bg-gray-50 dark:bg-gray-950">
+                                        <div className="w-64 p-4 border rounded bg-background">
                                             <img
                                                 src={`/storage/${selected.path}`}
                                                 alt={selected.name}

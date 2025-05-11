@@ -179,12 +179,16 @@ class MediaController extends Controller
                 return response()->json(['error' => 'Unable to download image'], 400);
             }
 
-            $extension = pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_EXTENSION);
+            // Extract extension and original filename from URL
+            $urlPath = parse_url($imageUrl, PHP_URL_PATH);
+            $originalFilename = basename($urlPath);
+            $extension = pathinfo($originalFilename, PATHINFO_EXTENSION);
+
             if (!in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
                 return response()->json(['error' => 'Invalid image type'], 400);
             }
 
-            // Get width and height from the image binary
+            // Validate image content
             $imageInfo = @getimagesizefromstring($imageContents);
             if (!$imageInfo) {
                 return response()->json(['error' => 'Could not determine image size'], 400);
@@ -192,15 +196,18 @@ class MediaController extends Controller
 
             [$width, $height] = $imageInfo;
 
+            // Generate unique filename for storage
             $filename = Str::random(40) . '.' . $extension;
             $path = 'uploads/' . $filename;
 
+            // Save to storage
             Storage::disk('public')->put($path, $imageContents);
 
             $mimeType = File::mimeType(storage_path("app/public/{$path}"));
 
+            // Save to DB
             $media = Media::create([
-                'name' => pathinfo($filename, PATHINFO_FILENAME),
+                'name' => pathinfo($originalFilename, PATHINFO_FILENAME),
                 'filename' => $filename,
                 'mime_type' => $mimeType,
                 'path' => $path,
@@ -215,6 +222,7 @@ class MediaController extends Controller
             return response()->json(['error' => 'Upload failed: ' . $e->getMessage()], 500);
         }
     }
+
 
 
 }
