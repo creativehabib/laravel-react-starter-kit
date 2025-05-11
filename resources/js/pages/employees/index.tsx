@@ -118,7 +118,7 @@ export default function Index() {
                         </div>
                         <EmployeeDrawer
                             employee={editing}
-                            triggerLabel="Add Employee"
+                            triggerLabel= "Add Employee"
                             departments={departments}
                             designations={designations}
                             media={media as MediaItem[]}

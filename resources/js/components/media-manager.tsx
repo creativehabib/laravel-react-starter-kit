@@ -37,15 +37,19 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
     const [deletingImage, setDeletingImage] = useState<MediaItem | null>(null);
 
     const [imageUrl, setImageUrl] = useState('');
-
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
-        fetchMedia(1);
-    }, []);
+        const delayDebounce = setTimeout(() => {
+            fetchMedia(1, searchQuery);
+        }, 500); // debounce 500ms
+        return () => clearTimeout(delayDebounce);
 
-    const fetchMedia = (pageNum: number) => {
+    }, [searchQuery]);
+
+    const fetchMedia = (pageNum: number, search: string = '') => {
         setLoading(true);
-        axios.get(`/media?page=${pageNum}`)
+        axios.get(`/media?page=${pageNum}&search=${encodeURIComponent(search)}`)
             .then(res => {
                 const data = res.data;
                 if (pageNum === 1) {
@@ -58,6 +62,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
             })
             .finally(() => setLoading(false));
     };
+
 
     const loadMore = () => {
         if (hasMore) {
@@ -251,20 +256,22 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
 
                 <div className="px-6 overflow-y-auto flex-1">
                     <Tabs defaultValue="library" className="w-full">
-                        <div className="flex items-center justify-between">
-                            <TabsList className="mb-4 sticky top-0 z-10 bg-white dark:bg-gray-800">
+                        <div className="flex items-center justify-between m-4">
+                            <TabsList className="sticky top-0 z-10 bg-gray-50 dark:bg-gray-800">
                                 <TabsTrigger value="upload" className="text-black dark:text-white">Upload files</TabsTrigger>
                                 <TabsTrigger value="url" className="text-black dark:text-white">Upload from Link</TabsTrigger>
                                 <TabsTrigger value="library" className="text-black dark:text-white">Media Library</TabsTrigger>
                                 <TabsTrigger value="optimole" className="text-black dark:text-white">Optimise</TabsTrigger>
                             </TabsList>
 
-                            <div className="flex items-center justify-end mt-2 mb-4">
+                            <div className="flex items-center justify-end">
                                 <div className="relative w-full max-w-xs">
                                     <Input
                                         type="text"
                                         placeholder="Search..."
                                         className="pl-10 pr-4"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
                                     />
                                     <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
                                 </div>
@@ -335,7 +342,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                                         <button
                                                             className="px-2 py-1 cursor-pointer bg-red-600 text-xs text-white rounded hover:bg-red-700"
                                                             onClick={() => {
-                                                                setDeletingImage(selected);
+                                                                setDeletingImage(img);
                                                                 setOpenDeleteDialog(true);
                                                             }}
                                                         >
@@ -380,14 +387,13 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                             </div>
                                             <div>
                                                 <p className="font-semibold">Name:</p>
-                                                <input
+                                                <Input
                                                     type="text"
-                                                    className="mb-2 border rounded px-2 py-1 w-full"
+                                                    className="mb-2"
                                                     value={editName}
                                                     onChange={(e) => setEditName(e.target.value)}
                                                     onBlur={handleSaveName}
                                                 />
-
 
                                                 <p className="font-semibold">Size:</p>
                                                 <p className="mb-2">{(selected.size / 1024).toFixed(2)} KB</p>
@@ -408,7 +414,7 @@ const MediaManagerModal: React.FC<Props> = ({ onClose, onConfirm }) => {
                                                     }
                                                 </p>
                                                 <p className="font-semibold">Dimensions:</p>
-                                                <p className="mb-2">{selected.width} × {selected.height} px</p>
+                                                <p className="mb-2">{selected.width ? selected.width : 'N/A'} X {selected.height ? selected.height : 'N/A'} px</p>
 
                                                 {/* Full URL Copy */}
                                                 <div className="mt-4">

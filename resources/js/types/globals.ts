@@ -77,7 +77,6 @@ export interface EmployeeType {
     date_of_birth: string;
     blood_group: string;
     emergency_contact: string;
-    employee_image: string;
     present_address: string;
     permanent_address: string;
     bank_account_number: string;
@@ -108,7 +107,6 @@ export interface EmployeeFormData {
     date_of_birth: string;
     blood_group: string;
     emergency_contact: string;
-    employee_image: File | string | null;
     bank_account_number: string;
     bank_name: string;
     verify: string;

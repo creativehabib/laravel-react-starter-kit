@@ -42,7 +42,6 @@ const initialFormData: EmployeeFormData = {
     date_of_birth: "",
     blood_group: "",
     emergency_contact: "",
-    employee_image: "",
     bank_account_number: "",
     bank_name: "",
     verify: "",

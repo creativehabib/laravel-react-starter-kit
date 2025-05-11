@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Media;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -12,12 +13,24 @@ use Illuminate\Support\Facades\File;
 
 class MediaController extends Controller
 {
-    public function index()
+    /**
+     * Display a listing of the media items.
+     */
+    public function index(Request $request)
     {
-        return Media::latest()->paginate(8)->withQueryString();
+        $query = Media::query();
+        if ($search = $request->input('search')) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+        return $query->orderByDesc('created_at')->paginate(12)->withQueryString();
     }
 
-    public function store(Request $request)
+    /**
+     * Store a new media item.
+     * @param Request $request
+     * @return Media
+     */
+    public function store(Request $request): Media
     {
         $request->validate(['image' => 'required|image']);
         $file = $request->file('image');
@@ -35,7 +48,12 @@ class MediaController extends Controller
         ]);
     }
 
-    public function upload(Request $request)
+    /**
+     * Upload a media file.
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function upload(Request $request): JsonResponse
     {
         $request->validate([
             'image' => 'required|image|max:128000', // 128MB max
@@ -59,7 +77,13 @@ class MediaController extends Controller
         return response()->json($media);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update a media item.
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(Request $request, $id): JsonResponse
     {
         $media = Media::findOrFail($id);
         $request->validate([
@@ -68,14 +92,19 @@ class MediaController extends Controller
 
         $media->update($request->only(['name']));
 
-        return response()->json(['message' => 'Media updated successfully']);
+        return response()->json(['sucess' => 'Media updated successfully']);
     }
 
-    public function destroy($id)
+    /**
+     * Delete a media item.
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function destroy($id): JsonResponse
     {
         $media = Media::findOrFail($id);
 
-        // ✅ Delete file from the public disk
+        // Delete a file from the public disk
         if (Storage::disk('public')->exists($media->path)) {
             Storage::disk('public')->delete($media->path);
         }
@@ -85,7 +114,13 @@ class MediaController extends Controller
         return response()->json(['success' => 'Media deleted successfully']);
     }
 
-    public function updateImage(Request $request, $id)
+    /**
+     * Update the image of a media item.
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function updateImage(Request $request, $id): JsonResponse
     {
         $media = Media::findOrFail($id);
         $request->validate(['image' => 'required|image']);
@@ -125,8 +160,12 @@ class MediaController extends Controller
         ]);
     }
 
-    // upload from url
-    public function uploadFromUrl(Request $request)
+    /**
+     * Upload an image from a URL.
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function uploadFromUrl(Request $request): JsonResponse
     {
         $request->validate([
             'url' => 'required|url',
@@ -145,7 +184,7 @@ class MediaController extends Controller
                 return response()->json(['error' => 'Invalid image type'], 400);
             }
 
-            // 🧠 Get width and height from the image binary
+            // Get width and height from the image binary
             $imageInfo = @getimagesizefromstring($imageContents);
             if (!$imageInfo) {
                 return response()->json(['error' => 'Could not determine image size'], 400);

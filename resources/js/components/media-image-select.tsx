@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import MediaManagerModal from '@/components/media-manager';
+import { Button } from '@/components/ui/button';
+import { ImageIcon } from 'lucide-react';
 export type MediaItem = {
     id: number | null | undefined;
     name: string;
@@ -31,13 +33,17 @@ const SetFeaturedImage: React.FC<Props> = ({ onSelect, initial }) => {
 
     return (
         <div className="mb-4 space-y-2">
-            <button
-                type="button"
+
+            <Button
+                type={'button'}
+                className="cursor-pointer"
+                variant={'outline'}
+                size={'sm'}
                 onClick={() => setModalOpen(true)}
-                className="bg-blue-600 text-white cursor-pointer px-3 py-1.5 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 active:bg-blue-800 transition duration-200"
             >
-                {selectedImage ? 'Change Featured Image' : 'Select Featured Image'}
-            </button>
+                <ImageIcon />
+                {selectedImage ? 'Change Media' : 'Add Media'}
+            </Button>
 
             {selectedImage && (
                 <div className="relative group w-fit">

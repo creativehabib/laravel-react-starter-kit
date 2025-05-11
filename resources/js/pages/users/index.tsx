@@ -86,7 +86,7 @@ const UserIndex = () => {
                                 user={editing}
                                 media={media as MediaItem[]}
                                 onClose={() => setEditing(null)}
-                                triggerLabel="Add User"
+                                triggerLabel= "Add User"
                                 open={false}
                             />
                         </div>
