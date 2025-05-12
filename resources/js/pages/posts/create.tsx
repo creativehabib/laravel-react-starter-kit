@@ -4,14 +4,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Loader2, Undo2Icon } from 'lucide-react';
 import SetFeaturedImage from '@/components/media-image-select';
 import { MediaItem } from '@/types/globals';
-import React from 'react';
+import React, { useState } from 'react';
+import TiptapEditor from '@/components/TiptapEditor';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -21,6 +21,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function CreatePost() {
+
     const { data, setData, post, errors, processing } = useForm<{
         title: string;
         category: string;
@@ -39,6 +40,7 @@ export default function CreatePost() {
         e.preventDefault();
         post('/posts');
     }
+
     const handleImageSelect = (media: Partial<MediaItem> | null) => {
         if (media?.id !== undefined) {
             setData('media_id', media?.id ?? null);
@@ -80,18 +82,13 @@ export default function CreatePost() {
                                     </div>
 
                                     <div className="mt-4">
-                                        <Label htmlFor="content">Content</Label>
-                                        <Textarea
-                                            rows={6}
-                                            id="content"
-                                            placeholder="Type content here..."
-                                            value={data.content}
-                                            onChange={(e) => setData('content', e.target.value)}
-                                            aria-invalid={!!errors.content}
+                                        {/* Other form fields */}
+                                        <TiptapEditor
+                                            content={data.content}
+                                            onChange={(content) => setData('content', content)}
+                                            placeholder="Write your content here..."
                                         />
-                                        <InputError message={errors.content} />
                                     </div>
-
 
                                 </CardContent>
                             </Card>
